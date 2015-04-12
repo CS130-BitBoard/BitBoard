@@ -40,6 +40,11 @@ io.sockets.on('connection', function(socket) {
     socket.on('clearCanvas', function() {
     	socket.broadcast.emit('clearCanvas');
     });
+    socket.on('disconnect', function() {
+    	delete usernames[socket.username];
+    	socket.broadcast.emit('', '', socket.username+ ' disconnected');
+    });
+
 });
 
 
