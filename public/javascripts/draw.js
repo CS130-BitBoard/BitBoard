@@ -3,6 +3,7 @@ var sessionId = io.socket.sessionid;
 
 $("#pencil").click(function() {
     tool1.activate();
+    $("#colorPicker").spectrum("enable");
     $("#pencil").addClass('selected');
 });
 
@@ -22,11 +23,11 @@ var path;
 var color;
 
 function onMouseDown(event) {
-
+    color = $("#colorPicker").spectrum("get").toString();
     var point = event.point;
     var data = {
         point: point,
-        color: "#0000000"
+        color: color
     }
     startPath(data, sessionId);
     emit("startPath", data, sessionId);
