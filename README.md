@@ -11,3 +11,6 @@ Team: Kasey Carrothers, Daniel Duan, Ryan Hansberry, Austin Martin, Nitin Gaddip
 ### To Run:
 1. Run the command `$ npm start`
 2. In your web browser, visit `localhost:3000`
+
+### Style
+The style guide is defined in `.jscsrc`. The project can be automatically linted by running `$ npm run lint`. Please lint before committing code.
