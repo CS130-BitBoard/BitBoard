@@ -3,7 +3,7 @@ var sessionId;
 
 var socket = io.connect('/');
 socket.on('connect', function() {
-    sessionid = this.socket.sessionid;
+    sessionId = this.socket.sessionid;
 
     socket.on('startPath', function(data, sessionId) {
         if (data.point) {
