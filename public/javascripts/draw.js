@@ -1,5 +1,30 @@
 var paths = {};
-var sessionId = io.socket.sessionid;
+var sessionId;
+
+var socket = io.connect('/');
+socket.on('connect', function() {
+    sessionid = this.socket.sessionid;
+
+    socket.on('startPath', function(data, sessionId) {
+        if (data.point){
+            data.point = new Point(data.point[1], data.point[2]);
+        }
+        startPath(data, sessionId);
+    });
+
+    socket.on('continuePath', function(data, sessionId) {
+        if (data.point){
+            data.point = new Point(data.point[1], data.point[2]);
+        }
+       continuePath(data, sessionId);
+        view.draw();
+    });
+
+    socket.on('clearCanvas', function() {
+        clearCanvas();
+        view.draw();
+    });
+});
 
 $("#pencil").click(function() {
     tool1.activate();
@@ -7,12 +32,11 @@ $("#pencil").click(function() {
     $("#pencil").addClass('selected');
 });
 
-
 $("#clear").click(function() {
     clearCanvas();
     view.draw();
     $("#pencil").removeClass('selected');
-    io.emit('clearCanvas');
+    socket.emit('clearCanvas');
 });
 
 function clearCanvas() {
@@ -30,7 +54,7 @@ function onMouseDown(event) {
         color: color
     }
     startPath(data, sessionId);
-    emit("startPath", data, sessionId);
+    socket.emit("startPath", data, sessionId);
 }
 
 //pencil
@@ -44,7 +68,7 @@ tool1.onMouseDrag = function(event) {
         tool: "tool1"
     };
     continuePath(data, sessionId);
-    emit("continuePath",data, sessionId);
+    socket.emit("continuePath",data, sessionId);
 }
 
 function startPath(data, sessionId) {
@@ -59,27 +83,3 @@ function continuePath(data, sessionId) {
         path.add(data.point);
     }
 }
-
-function emit(eventName, data, sessionId) {
-    io.emit(eventName, data, sessionId);
-}
-
-io.on('startPath', function(data, sessionId) {
-    if (data.point){
-        data.point = new Point(data.point[1], data.point[2]);
-    }
-    startPath(data, sessionId);
-});
-
-io.on('continuePath', function(data, sessionId) {
-    if (data.point){
-        data.point = new Point(data.point[1], data.point[2]);
-    }
-   continuePath(data, sessionId);
-    view.draw();
-});
-
-io.on('clearCanvas', function() {
-    clearCanvas();
-    view.draw();
-});
