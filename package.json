@@ -1,18 +1,21 @@
 {
   "name": "BitBoard",
+  "description": "A collaborative digital whiteboard to be used across multiple clients, be they desktop or mobile.",
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "start": "node app.js"
+    "start": "node_modules/nodemon/bin/nodemon.js app.js"
   },
   "dependencies": {
     "express": "3.5.0",
     "jade": "*",
     "socket.io": "^0.9.16"
   },
-  "engines": {
-      "node": ">=0.10.26",
-      "npm":">=1.4.3"
+  "devDependencies": {
+    "nodemon": "^1.3.7"
   },
-  "description": "BitBoard"
+  "engines": {
+    "node": ">=0.10.26",
+    "npm": ">=1.4.3"
+  }
 }
