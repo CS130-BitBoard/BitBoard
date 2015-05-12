@@ -1,21 +1,17 @@
 var paths = {};
 var sessionId;
 
+// e.extend.initialize {x: 309, y: 406}
+
 var socket = io.connect('/');
 socket.on('connect', function() {
     sessionId = this.socket.sessionid;
 
     socket.on('startPath', function(data, sessionId) {
-        if (data.point) {
-            data.point = new Point(data.point[1], data.point[2]);
-        }
         startPath(data, sessionId);
     });
 
     socket.on('continuePath', function(data, sessionId) {
-        if (data.point) {
-            data.point = new Point(data.point[1], data.point[2]);
-        }
         continuePath(data, sessionId);
         view.draw();
     });
@@ -48,11 +44,13 @@ var color;
 
 function onMouseDown(event) {
     color = $('#colorPicker').spectrum('get').toString();
-    var point = event.point;
     var data = {
-        point: point,
+        point: {
+            x: event.point.x,
+            y: event.point.y
+        },
         color: color
-    }
+    };
     startPath(data, sessionId);
     socket.emit('startPath', data, sessionId);
 }
@@ -62,9 +60,11 @@ tool1 = new Tool();
 tool1.onMouseDown = onMouseDown;
 
 tool1.onMouseDrag = function(event) {
-    var point = event.point;
     var data = {
-        point: point,
+        point: {
+            x: event.point.x,
+            y: event.point.y
+        },
         tool: 'tool1'
     };
     continuePath(data, sessionId);
@@ -74,12 +74,12 @@ tool1.onMouseDrag = function(event) {
 function startPath(data, sessionId) {
     paths[sessionId] = new Path();
     paths[sessionId].strokeColor = data.color;
-    paths[sessionId].add(data.point);
+    paths[sessionId].add(new Point(data.point.x, data.point.y));
 }
 
 function continuePath(data, sessionId) {
     var path = paths[sessionId];
     if (data.tool === 'tool1') {
-        path.add(data.point);
+        path.add(new Point(data.point.x, data.point.y));
     }
 }
