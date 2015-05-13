@@ -3,5 +3,13 @@ extends layout
 block content
   h1 BitBoard
 
-  button.login-button Join Room
-  button.login-button Create Room
+  a.button.login-button(href="#join-modal") Join Room
+  a.button.login-button(href="/boards/1234") Create Room
+
+  div.modal#join-modal
+    div.dialog
+      h2 Enter Room Code
+      input.shortcode(type="text", maxlength="4")
+      a.button.submit.invalid(href="#join-modal") Join
+
+  script(src='/javascripts/index.js')

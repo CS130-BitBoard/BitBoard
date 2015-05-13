@@ -1,31 +1,96 @@
-h1 {
-    background-color: #1abc9c;
-    color: white;
+h1, h2 {
     font-family: "Lato", Helvetica, sans-serif;
-    font-size: 48px;
-    font-weight: 100;
-    margin: 0 0 50px;
-    padding: 20px 0;
+    font-weight: 300;
     text-align: center;
-    text-transform: uppercase;
 }
+    h1 {
+        background-color: #1abc9c;
+        color: white;
+        font-size: 48px;
+        font-weight: 100;
+        margin: 0 0 50px;
+        padding: 20px 0;
+        text-transform: uppercase;
+    }
+    h2 {
+        font-size: 32px;
+        margin-top: 10px;
+    }
 
-.login-button {
-    background: #e74c3c;
+.button {
+    background: #2980b9;
     border: none;
     color: white;
     display: block;
-    font-family: 'Lato';
+    font-family: "Lato";
     font-size: 24px;
     font-weight: 100;
     margin: 40px auto;
     min-width: 300px;
     padding: 25px;
+    text-align: center;
+    text-decoration: none;
     text-transform: uppercase;
-    transition: transform 0.2s ease-in;
     width: 50%;
+}
+
+.login-button {
+    background: #e74c3c;
+    transition: transform 0.2s ease-in;
 }
     .login-button:hover {
         transform: scale(1.05, 1.05);
         cursor: pointer;
     }
+
+.modal {
+    position: fixed;
+    font-family: "Lato", Helvetica, sans-serif;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background: rgba(0, 0, 0, 0.8);
+    opacity: 0;
+    transition: opacity 0.4s ease-in;
+    pointer-events: none;
+    z-index: 99999;
+}
+    .modal:target {
+        opacity: 1;
+        pointer-events: auto;
+    }
+    .modal .dialog {
+        width: 80%;
+        max-width: 600px;
+        position: relative;
+        margin: 10% auto;
+        padding: 20px;
+        background: #fff;
+    }
+        .modal .dialog h2 {
+            text-transform: uppercase
+        }
+        .modal .dialog input.shortcode {
+            border: 1px solid #2980b9;
+            display: block;
+            margin: 0 auto;
+            text-transform: uppercase;
+            font-family: "Lato", Helvetica, sans-serif;
+            font-size: 30px;
+            font-weight: 300;
+            width: 200px;
+            text-align: center;
+            padding: 15px 0px;
+        }
+        .modal .dialog .button.submit {
+            box-sizing: border-box;
+            min-width: 200px;
+            padding: 20px 25px;
+            transition: opacity 0.2s ease-in;
+            width: 200px;
+        }
+            .modal .dialog .button.submit.invalid {
+                cursor: default;
+                opacity: 0.1;
+            }
