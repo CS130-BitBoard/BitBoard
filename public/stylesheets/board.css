@@ -1,0 +1,55 @@
+#board {
+    background: url('../images/bg.png') repeat #e4e4e4;
+}
+
+nav {
+    display: flex;
+    display: -webkit-flex;
+}
+
+.btn {
+    height: 30px;
+    width: 30px;
+    padding: 0;
+    margin-right: 20px;
+    border: 0;
+    border-radius: 4px;
+    background: #53bee8;
+    outline: none;
+}
+
+.pencil{
+    background-image: url('/images/pencil.png');
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+
+.selected#pencil {
+    background: #a9def4;
+    background-image: url('/images/pencil.png');
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+
+.clear {
+    height: 30px;
+    width: auto;
+    color: white;
+    background: #2d3df5;
+    border: 0;
+    border-radius: 4px;
+    font-family: "Courier New", Courier, monospace;
+    font-size: 16px;
+    margin-left: 20px;
+    outline: none;
+    box-sizing: border-box;
+}
+    .clear#send {
+        margin-left: 2px;
+        display: none;
+    }
+
+canvas#draw {
+    height: 650px;
+    box-sizing: border-box;
+}
