@@ -1,15 +1,15 @@
 extends layout
 
 block content
-  nav
-    input(type="button", id="pencil", class="pencil btn")
-    input(type="text", class="picker", id="colorPicker")
-    input(type="button", class="clear", id="clear" value="Clear")
-  canvas#draw
-  script(type='text/paperscript', src='/javascripts/draw.js', canvas='draw')
-  script(type='text/javascript').
-    $("#colorPicker").spectrum({
-      color: "#000",
-      showAlpha: true,
-      showPalette: true
-    });
+  h1 BitBoard
+
+  a.button.login-button(href="#join-modal") Join Room
+  a.button.login-button(href="/boards/1234") Create Room
+
+  div.modal#join-modal
+    div.dialog
+      h2 Enter Room Code
+      input.shortcode(type="text", maxlength="4")
+      a.button.submit.invalid(href="#join-modal") Join
+
+  script(src='/javascripts/index.js')
