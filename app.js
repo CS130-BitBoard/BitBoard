@@ -25,14 +25,21 @@ var boardRoutes = require('./routes/board');
 app.get('/', indexRoutes.index);
 app.get('/boards/:boardId', boardRoutes.get);
 
-io.sockets.on('connection', function(socket) {
+io.on('connection', function(socket) {
+    var boardId = '';
+
+    socket.on('joinBoard', function(id) {
+        boardId = id;
+        socket.join(boardId);
+    });
+
     socket.on('startPath', function(data, sessionId) {
-        socket.broadcast.emit('startPath', data, sessionId);
+        socket.broadcast.to(boardId).emit('startPath', data, sessionId);
     });
     socket.on('continuePath', function(data, sessionId) {
-        socket.broadcast.emit('continuePath', data, sessionId);
+        socket.broadcast.to(boardId).emit('continuePath', data, sessionId);
     });
     socket.on('clearCanvas', function() {
-        socket.broadcast.emit('clearCanvas');
+        socket.broadcast.to(boardId).emit('clearCanvas');
     });
 });

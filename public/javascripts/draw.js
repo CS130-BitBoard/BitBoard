@@ -1,10 +1,13 @@
 $(document).ready(function() {
     var paths = {};
     var sessionId;
+    var boardId = $('#boardId').data('value');
 
     var socket = io.connect('/');
     socket.on('connect', function() {
         sessionId = this.socket.sessionid;
+
+        socket.emit('joinBoard', boardId);
 
         socket.on('startPath', function(data, sessionId) {
             startPath(data, sessionId);
