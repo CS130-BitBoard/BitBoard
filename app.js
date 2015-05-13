@@ -1,30 +1,29 @@
-var express = require('express');
-var routes = require('./routes');
-var user = require('./routes/user');
-var http = require('http');
-var path = require('path');
+var express = require('express'),
+    http = require('http');
 
 var app = express();
+var server = app.listen(3000);
+var io = require('socket.io').listen(server);
 
-app.set('port', process.env.PORT || 3000);
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
-app.use(express.favicon('./node_modules/express/node_modules/connect/node_modules/static-favicon/favicon.ico'));
-app.use(express.logger('dev'));
-app.use(express.json());
-app.use(express.urlencoded());
-app.use(express.methodOverride());
-app.use(app.router);
-app.use(express.static(path.join(__dirname, 'public')));
-
-app.get('/', routes.index);
-
-var server = http.createServer(app).listen(app.get('port'));
-var io = require('socket.io').listen(server, function() {
-    console.log('Express server listening on port ' + app.get('port'));
+app.configure(function() {
+    app.set('views', __dirname + '/views');
+    app.set('view engine', 'jade');
+    app.use(express.logger('dev'));
+    app.use(express.static(__dirname + '/public'));
+    app.use(express.bodyParser());
+    app.use(express.methodOverride());
+    app.use(app.router);
 });
 
-var usernames = {};
+app.configure('development', function() {
+    app.use(express.errorHandler());
+});
+
+var indexRoutes = require('./routes');
+var boardRoutes = require('./routes/board');
+
+app.get('/', indexRoutes.index);
+app.get('/boards/:boardId', boardRoutes.get);
 
 io.sockets.on('connection', function(socket) {
     socket.on('startPath', function(data, sessionId) {
@@ -35,9 +34,5 @@ io.sockets.on('connection', function(socket) {
     });
     socket.on('clearCanvas', function() {
         socket.broadcast.emit('clearCanvas');
-    });
-    socket.on('disconnect', function() {
-        delete usernames[socket.username];
-        socket.broadcast.emit('', '', socket.username + ' disconnected')
     });
 });
