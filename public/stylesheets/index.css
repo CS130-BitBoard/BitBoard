@@ -1,0 +1,31 @@
+h1 {
+    background-color: #1abc9c;
+    color: white;
+    font-family: "Lato", Helvetica, sans-serif;
+    font-size: 48px;
+    font-weight: 100;
+    margin: 0 0 50px;
+    padding: 20px 0;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+.login-button {
+    background: #e74c3c;
+    border: none;
+    color: white;
+    display: block;
+    font-family: 'Lato';
+    font-size: 24px;
+    font-weight: 100;
+    margin: 40px auto;
+    min-width: 300px;
+    padding: 25px;
+    text-transform: uppercase;
+    transition: transform 0.2s ease-in;
+    width: 50%;
+}
+    .login-button:hover {
+        transform: scale(1.05, 1.05);
+        cursor: pointer;
+    }
