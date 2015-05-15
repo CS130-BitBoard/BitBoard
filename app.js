@@ -25,21 +25,46 @@ var boardRoutes = require('./routes/board');
 app.get('/', indexRoutes.index);
 app.get('/boards/:boardId', boardRoutes.get);
 
+//Holds the current state of each board.
+var board_state = {};
+
 io.on('connection', function(socket) {
     var boardId = '';
 
     socket.on('joinBoard', function(id) {
         boardId = id;
         socket.join(boardId);
+
+        //Replay messages to new clients
+        if (board_state[boardId]) {
+            var messages = board_state[boardId];
+            for (var i = 0; i < messages.length; i++) {
+                var m = messages[i];
+                socket.emit(m.type, m.data, m.sessionId);
+            }
+        }
+        //We are the first in the room, create an empty state
+        else {
+            board_state[boardId] = [];
+        }
     });
 
     socket.on('startPath', function(data, sessionId) {
+        board_state[boardId].push(new Message('startPath', data, sessionId));
         socket.broadcast.to(boardId).emit('startPath', data, sessionId);
     });
     socket.on('continuePath', function(data, sessionId) {
+        board_state[boardId].push(new Message('continuePath', data, sessionId));
         socket.broadcast.to(boardId).emit('continuePath', data, sessionId);
     });
     socket.on('clearCanvas', function() {
+        board_state[boardId].length = 0; //Clear the array
         socket.broadcast.to(boardId).emit('clearCanvas');
     });
 });
+
+function Message(type, data, id) {
+    this.type = type;
+    this.data = data;
+    this.sessionId = id;
+}
