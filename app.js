@@ -27,14 +27,16 @@ app.get('/boards/:boardId', boardRoutes.get);
 
 //Holds the current state of each board.
 var board_state = {};
+//Key:boardID Value: list of users
+var users = {};
 
 io.on('connection', function(socket) {
     var boardId = '';
 
-    socket.on('joinBoard', function(id) {
-        boardId = id;
+    socket.on('joinBoard', function(boardid, userid) {
+        boardId = boardid;
         socket.join(boardId);
-
+        console.log("Name:"+userid);
         //Replay messages to new clients
         if (board_state[boardId]) {
             var messages = board_state[boardId];
@@ -60,6 +62,15 @@ io.on('connection', function(socket) {
     socket.on('clearCanvas', function() {
         board_state[boardId].length = 0; //Clear the array
         socket.broadcast.to(boardId).emit('clearCanvas');
+    });
+    socket.on('adduser', function(userid) {
+        socket.userid = userid;
+        usernames[userid] = userid;
+        socket.emit('updatechat', '', ' you have connected');
+        socket.broadcast.emit('updatechat', '',' '+userid + ' has connected');
+    });
+    socket.on('sendchat', function(data) {
+        io.sockets.emit('updatechat', socket.userid, data);
     });
 });
 
