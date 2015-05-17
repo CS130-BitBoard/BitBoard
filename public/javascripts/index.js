@@ -19,7 +19,7 @@ $(document).ready(function() {
 
     $('.submit').click(function() {
         if (!$(this).hasClass('invalid')) {
-            window.location.assign('/boards/' + $('#boardid').val() + '?' + $('#userid').val());
+            window.location.assign('/boards/' + $('#boardid').val() + "!" + $('#userid').val());
         }
     });
 });

@@ -19,9 +19,9 @@ app.configure('development', function() {
     app.use(express.errorHandler());
 });
 
+
 var indexRoutes = require('./routes');
 var boardRoutes = require('./routes/board');
-
 app.get('/', indexRoutes.index);
 app.get('/boards/:boardId', boardRoutes.get);
 
@@ -36,7 +36,12 @@ io.on('connection', function(socket) {
     socket.on('joinBoard', function(boardid, userid) {
         boardId = boardid;
         socket.join(boardId);
-        console.log("Name:"+userid);
+        console.log("BoardId: " + boardid);
+        if(!users[boardid]){
+            users[boardid] = [];
+        }
+        users[boardid].push(userid);
+        console.log(users);
         //Replay messages to new clients
         if (board_state[boardId]) {
             var messages = board_state[boardId];

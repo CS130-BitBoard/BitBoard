@@ -1,14 +1,15 @@
 $(document).ready(function() {
     var paths = {};
     var sessionId;
-    var boardId = $('#boardId').data('value');
-    var userid = $('#name').val();
+    var url = $('#boardId').data('value').split("!", 2);
+    var boardId = url[0];
+    var userId = url[1];
 
     var socket = io.connect('/');
     socket.on('connect', function() {
         sessionId = this.socket.sessionid;
 
-        socket.emit('joinBoard', boardId, userid);
+        socket.emit('joinBoard', boardId, userId);
 
         socket.on('startPath', function(data, sessionId) {
             startPath(data, sessionId);
