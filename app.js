@@ -46,6 +46,7 @@ io.on('connection', function(socket) {
             //duplicate user found
             /* do something */
         }
+        socket.userid = userid;
         users[boardid].push(userid);
         console.log(users);
         //Replay messages to new clients
@@ -74,6 +75,16 @@ io.on('connection', function(socket) {
         board_state[boardId].length = 0; //Clear the array
         socket.broadcast.to(boardId).emit('clearCanvas');
     });
+    
+    socket.on('disconnect', function() {
+        delete users[boardId][users[boardId].indexOf(socket.userid)];
+        if(users[boardId].length == 0){
+            delete users.boardId;
+        }
+        socket.broadcast.to(boardId).emit('updatechat', '', socket.userid + ' disconnected');
+        socket.userid = null;
+    });
+
 });
 
 function Message(type, data, id) {
