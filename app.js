@@ -40,6 +40,12 @@ io.on('connection', function(socket) {
         if(!users[boardid]){
             users[boardid] = [];
         }
+
+        //checking for existing username
+        if(users[boardid].indexOf(userid) != -1){
+            //duplicate user found
+            /* do something */
+        }
         users[boardid].push(userid);
         console.log(users);
         //Replay messages to new clients
@@ -67,15 +73,6 @@ io.on('connection', function(socket) {
     socket.on('clearCanvas', function() {
         board_state[boardId].length = 0; //Clear the array
         socket.broadcast.to(boardId).emit('clearCanvas');
-    });
-    socket.on('adduser', function(userid) {
-        socket.userid = userid;
-        usernames[userid] = userid;
-        socket.emit('updatechat', '', ' you have connected');
-        socket.broadcast.emit('updatechat', '',' '+userid + ' has connected');
-    });
-    socket.on('sendchat', function(data) {
-        io.sockets.emit('updatechat', socket.userid, data);
     });
 });
 
