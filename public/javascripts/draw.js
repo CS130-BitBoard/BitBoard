@@ -39,6 +39,12 @@ $(document).ready(function() {
         socket.emit('clearCanvas');
     });
 
+    $('#save').click(function() {
+        $('canvas#draw')[0].toBlob(function(blob) {
+            saveAs(blob, 'test.png');
+        });
+    });
+
     function clearCanvas() {
         project.activeLayer.removeChildren();
     }

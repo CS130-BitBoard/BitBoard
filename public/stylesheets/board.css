@@ -33,6 +33,18 @@ nav {
     background-size: contain;
 }
 
+.save{
+    background-image: url('/images/floppy.png');
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+
+.selected#save {
+    background: #a9def4;
+    background-image: url('/images/floppy.png');
+    background-repeat: no-repeat;
+    background-size: contain;
+}
 .clear {
     height: 30px;
     width: auto;
