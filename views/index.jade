@@ -8,14 +8,17 @@ block content
 
   div.modal#join-modal
     div.dialog
-      h2 Enter Room Code
-      input.shortcode(id="boardid", type="text", maxlength="4")
+      div.field
+        h2 Your Name
+        input.modal-input(id="userid", type="text", maxlength="8")
 
-      h2 Enter Your Name
-      input.shortcode(id="userid", type="text", maxlength="8")
+      div.field
+        h2 Room Code
+        input.modal-input.shortcode(id="boardid", type="text", maxlength="4")
 
-      h2 Enter Password
-      input.shortcode(type="password")
+      div.field
+        h2 Password
+        input.modal-input(type="password")
 
       a.button.submit.invalid(href="#join-modal") Join
 

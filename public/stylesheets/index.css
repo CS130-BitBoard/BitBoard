@@ -61,20 +61,24 @@ h1, h2 {
         pointer-events: auto;
     }
     .modal .dialog {
-        width: 80%;
-        max-width: 600px;
+        width: 60%;
+        max-width: 500px;
         position: relative;
-        margin: 10% auto;
+        margin: 100px auto;
         padding: 20px;
         background: #fff;
     }
+        .modal .dialog .field {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
         .modal .dialog h2 {
             text-transform: uppercase
         }
-        .modal .dialog input.shortcode {
+        .modal .dialog input.modal-input {
             border: 1px solid #2980b9;
-            display: block;
-            margin: 0 auto;
+            margin: 0;
             text-transform: uppercase;
             font-family: "Lato", Helvetica, sans-serif;
             font-size: 30px;
