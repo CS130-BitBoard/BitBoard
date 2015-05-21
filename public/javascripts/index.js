@@ -10,10 +10,12 @@ $(document).ready(function() {
         return false;
     });
 
-    $('.shortcode').on('keyup change', function() {
+    $('.shortcode').on('keyup', function() {
         if ($(this).val().length === validShortcodeLength) {
             // TODO: validate on backend if it is legitimate.
             $('.submit').removeClass('invalid');
+        } else {
+            $('.submit').addClass('invalid');
         }
     });
 
