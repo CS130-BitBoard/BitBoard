@@ -37,12 +37,12 @@ io.on('connection', function(socket) {
         boardId = boardid;
         socket.join(boardId);
         console.log("BoardId: " + boardid);
-        if(!users[boardid]){
+        if (!users[boardid]) {
             users[boardid] = [];
         }
 
         //checking for existing username
-        if(users[boardid].indexOf(userid) != -1){
+        if (users[boardid].indexOf(userid) != -1) {
             //duplicate user found
             /* do something */
         }
@@ -78,7 +78,7 @@ io.on('connection', function(socket) {
     
     socket.on('disconnect', function() {
         delete users[boardId][users[boardId].indexOf(socket.userid)];
-        if(users[boardId].length == 0){
+        if (users[boardId].length == 0) {
             delete users.boardId;
         }
         socket.broadcast.to(boardId).emit('updatechat', '', socket.userid + ' disconnected');
