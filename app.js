@@ -36,7 +36,7 @@ io.on('connection', function(socket) {
     socket.on('joinBoard', function(boardid, userid) {
         boardId = boardid;
         socket.join(boardId);
-        console.log("BoardId: " + boardid);
+        console.log('BoardId: ', boardid);
         if (!users[boardid]) {
             users[boardid] = [];
         }
@@ -44,7 +44,7 @@ io.on('connection', function(socket) {
         //checking for existing username
         if (users[boardid].indexOf(userid) != -1) {
             //duplicate user found
-            /* do something */
+            // TODO: Do something
         }
         socket.userid = userid;
         users[boardid].push(userid);
@@ -56,9 +56,8 @@ io.on('connection', function(socket) {
                 var m = messages[i];
                 socket.emit(m.type, m.data, m.sessionId);
             }
-        }
-        //We are the first in the room, create an empty state
-        else {
+        } else {
+            // We are the first in the room, create an empty state
             board_state[boardId] = [];
         }
     });
@@ -75,7 +74,7 @@ io.on('connection', function(socket) {
         board_state[boardId].length = 0; //Clear the array
         socket.broadcast.to(boardId).emit('clearCanvas');
     });
-    
+
     socket.on('disconnect', function() {
         delete users[boardId][users[boardId].indexOf(socket.userid)];
         if (users[boardId].length == 0) {
