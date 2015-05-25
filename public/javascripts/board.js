@@ -1,3 +1,51 @@
+function Canvas() {
+    var paths = {};
+
+    this.clear = function() {
+        project.activeLayer.removeChildren();
+        view.draw();
+    };
+
+    this.startPath = function(data, sessionId) {
+        paths[sessionId] = new Path();
+        paths[sessionId].strokeColor = data.color;
+        paths[sessionId].add(new Point(data.point.x, data.point.y));
+        view.draw();
+    };
+
+    this.continuePath = function(data, sessionId) {
+        var path = paths[sessionId];
+        if (data.tool === 'tool1') {
+            path.add(new Point(data.point.x, data.point.y));
+        }
+        view.draw();
+    };
+}
+
+function Chatbox($chatContainer, socket) {
+    var postStatusMessage = function(message) {
+        $chatContainer.find('.chat').append('<span class="status-message">' + message + '</span><br>');
+    };
+
+    var postUserMessage = function(userId, message) {
+        $chatContainer.find('.chat').append('<b>' + userId + ' :</b> ' + message + '<br>');
+    };
+
+    this.postMessage = function(userId, message) {
+        if (!userId) {
+            postStatusMessage(message);
+        } else {
+            postUserMessage(userId, message);
+        }
+    };
+
+    this.sendCurrentMessage = function() {
+        var message = $chatContainer.find('#current-message').val();
+        $chatContainer.find('#current-message').val('');
+        socket.emit('sendChatMessage', message);
+    };
+}
+
 $(document).ready(function() {
     $("#colorPicker").spectrum({
       color: "#000",
@@ -5,38 +53,31 @@ $(document).ready(function() {
       showPalette: true
     });
 
-    var paths = {};
     var sessionId;
     var boardId = $('#board-id').data('value');
     var userId = $('#user-id').data('value');
 
     var socket = io.connect('/');
+    var canvas = new Canvas();
+    var chatbox = new Chatbox($('#chat-container'), socket);
+
     socket.on('connect', function() {
         sessionId = this.socket.sessionid;
 
         socket.emit('joinBoard', boardId, userId);
 
         socket.on('startPath', function(data, sessionId) {
-            startPath(data, sessionId);
+            canvas.startPath(data, sessionId);
         });
         socket.on('continuePath', function(data, sessionId) {
-            continuePath(data, sessionId);
-            view.draw();
+            canvas.continuePath(data, sessionId);
         });
         socket.on('clearCanvas', function() {
-            clearCanvas();
-            view.draw();
+            canvas.clear();
         });
 
         socket.on('updateChatbox', function(userId, message) {
-            // KLUDGE: this branch seems redundant
-            if (userId === '') {
-                $('#chat').append(message + '<br>');
-            } else {
-                if (message !== '') {
-                    $('#chat').append('<b>' + userId + ' :</b> ' + message + '<br>');
-                }
-            }
+            chatbox.postMessage(userId, message);
         });
     });
 
@@ -47,8 +88,7 @@ $(document).ready(function() {
     });
 
     $('#clear').click(function() {
-        clearCanvas();
-        view.draw();
+        canvas.clear();
         $('#pencil').removeClass('selected');
         socket.emit('clearCanvas');
     });
@@ -59,15 +99,8 @@ $(document).ready(function() {
         });
     });
 
-    function clearCanvas() {
-        project.activeLayer.removeChildren();
-    }
-
-    var path;
-    var color;
-
     function onMouseDown(event) {
-        color = $('#colorPicker').spectrum('get').toString();
+        var color = $('#colorPicker').spectrum('get').toString();
         var data = {
             point: {
                 x: event.point.x,
@@ -75,7 +108,7 @@ $(document).ready(function() {
             },
             color: color
         };
-        startPath(data, sessionId);
+        canvas.startPath(data, sessionId);
         socket.emit('startPath', data, sessionId);
     }
 
@@ -91,34 +124,16 @@ $(document).ready(function() {
             },
             tool: 'tool1'
         };
-        continuePath(data, sessionId);
+        canvas.continuePath(data, sessionId);
         socket.emit('continuePath', data, sessionId);
-    }
+    };
 
-    function startPath(data, sessionId) {
-        paths[sessionId] = new Path();
-        paths[sessionId].strokeColor = data.color;
-        paths[sessionId].add(new Point(data.point.x, data.point.y));
-    }
-
-    function continuePath(data, sessionId) {
-        var path = paths[sessionId];
-        if (data.tool === 'tool1') {
-            path.add(new Point(data.point.x, data.point.y));
-        }
-    }
-
-    // Chat:
-    function sendMessage() {
-        var message = $('#current-message').val();
-        $('#current-message').val('');
-        socket.emit('sendChatMessage', message);
-    }
     $('#current-message').keypress(function(e) {
         // Enter key:
         if (e.which == 13) {
-            sendMessage();
+            chatbox.sendCurrentMessage();
         }
     });
-    $('#send-message').click(sendMessage);
+
+    $('#send-message').click(chatbox.sendCurrentMessage);
 });
