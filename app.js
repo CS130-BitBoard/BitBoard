@@ -40,12 +40,12 @@ io.on('connection', function(socket) {
         if (!users[boardid]) {
             users[boardid] = [];
         }
-        if(userid != null){
+        if (userid != null) {
             socket.userid = userid;
             users[boardid].push(userid);
         }
         socket.emit('updatechatbox', '', ' you have joined');
-        socket.broadcast.to(boardId).emit('updatechatbox', '',' '+ userid + ' has joined');
+        socket.broadcast.to(boardId).emit('updatechatbox', '', ' ' + userid + ' has joined');
 
         console.log(users);
         //Replay messages to new clients
@@ -80,15 +80,14 @@ io.on('connection', function(socket) {
     });
 
     socket.on('disconnect', function() {
-        if(socket.userid != null){
+        if (socket.userid != null) {
             delete users[boardId][users[boardId].indexOf(socket.userid)];
             if (users[boardId].length == 0) {
                 delete users.boardId;
             }
             socket.broadcast.to(boardId).emit('updatechatbox', '', socket.userid + ' disconnected');
-        }   
+        }
     });
-
 });
 
 function Message(type, data, id) {
