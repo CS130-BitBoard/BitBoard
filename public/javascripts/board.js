@@ -22,7 +22,7 @@ function Canvas() {
     };
 }
 
-function Chatbox($chatContainer, socket) {
+function Chatbox($chatContainer, socket, userId) {
     var postStatusMessage = function(message) {
         $chatContainer.find('.chat').append('<span class="status-message">' + message + '</span><br>');
     };
@@ -42,6 +42,7 @@ function Chatbox($chatContainer, socket) {
     this.sendCurrentMessage = function() {
         var message = $chatContainer.find('#current-message').val();
         $chatContainer.find('#current-message').val('');
+        postUserMessage(userId, message);
         socket.emit('sendChatMessage', message);
     };
 }
@@ -59,7 +60,7 @@ $(document).ready(function() {
 
     var socket = io.connect('/');
     var canvas = new Canvas();
-    var chatbox = new Chatbox($('#chat-container'), socket);
+    var chatbox = new Chatbox($('#chat-container'), socket, userId);
 
     socket.on('connect', function() {
         sessionId = this.socket.sessionid;

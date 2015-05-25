@@ -49,7 +49,7 @@ io.on('connection', function(socket) {
         socket.broadcast.to(boardId).emit('updateChatbox', '', ' ' + userid + ' has joined');
 
         console.log(users);
-        //Replay messages to new clients
+        // Replay messages to new clients
         if (board_state[boardId]) {
             var messages = board_state[boardId];
             for (var i = 0; i < messages.length; i++) {
@@ -71,12 +71,11 @@ io.on('connection', function(socket) {
         socket.broadcast.to(boardId).emit('continuePath', data, sessionId);
     });
     socket.on('clearCanvas', function() {
-        board_state[boardId].length = 0; //Clear the array
+        board_state[boardId].length = 0; // Clear the array
         socket.broadcast.to(boardId).emit('clearCanvas');
     });
 
     socket.on('sendChatMessage', function(message) {
-        socket.emit('updateChatbox', socket.userid, message);
         socket.broadcast.to(boardId).emit('updateChatbox', socket.userid, message);
     });
 
