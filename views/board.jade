@@ -2,21 +2,22 @@ extends layout
 
 block content
   div#board
-    div#boardId(data-value=boardId)
-    div#userId(data-value=userId)
+    div#board-id(data-value=boardId)
+    div#user-id(data-value=userId)
 
     nav
-      input(type="button", class="save btn", id="save")
-      input(type="button", id="pencil", class="pencil btn")
-      input(type="text", class="picker", id="colorPicker")
-      input(type="button", class="clear", id="clear" value="Clear")
+      input.save.btn#save(type="button")
+      input.btn.pencil#pencil(type="button")
+      input.picker#colorPicker(type="text")
+      input.clear#clear(type="button", value="Clear")
 
     canvas#draw
-  #chatcontainer
-    #chat
-    .controls
-      input(type="button", id="send", class="clear" value="Send")
-      input(type="text", id="data")
+
+  div#chatcontainer
+    div#chat
+    div.controls
+      input#data(type="text")
+      input.clear#send(type="button", value="Send")
 
   script(src='https://cdnjs.cloudflare.com/ajax/libs/paper.js/0.9.22/paper-full.min.js')
   script(src='https://cdnjs.cloudflare.com/ajax/libs/spectrum/1.7.0/spectrum.min.js')
@@ -25,5 +26,5 @@ block content
   script(src='/javascripts/lib/canvas-toBlob.js')
   script(src='/socket.io/socket.io.js')
 
-  script(src='/javascripts/chat.js')
   script(type='text/paperscript', src='/javascripts/draw.js', canvas='draw')
+  script(src='/javascripts/chat.js')

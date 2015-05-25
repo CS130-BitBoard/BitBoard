@@ -10,7 +10,7 @@
     border-left: 1px solid #ccc;
     float: left;
     box-sizing: border-box;
-    
+
 }
 
 #chat {
@@ -28,23 +28,19 @@
     width: 100%;
     box-sizing: border-box;
 }
-
-.controls input#send {
-    float: right;
-}
-
-.controls input#data{
-    margin: 0px;
-    width: calc(100% - 54px);
-    height: 30px;
-    padding: 10px;
-    border-radius: 4px;
-    border: 1px solid #ccc;
-    float: right;
-    box-sizing: border-box;
-    display: none;
-
-}
+    .controls input#data {
+        margin: 0px;
+        width: calc(100% - 54px);
+        height: 30px;
+        padding: 10px;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+        float: left;
+        box-sizing: border-box;
+    }
+    .controls input#send {
+        float: right;
+    }
 
 nav {
     display: flex;
@@ -100,9 +96,8 @@ nav {
     outline: none;
     box-sizing: border-box;
 }
-.clear#send {
-    margin-left: 2px;
-        display: none;
+    .clear#send {
+        margin-left: 2px;
     }
 
 canvas#draw {

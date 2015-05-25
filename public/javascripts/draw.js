@@ -7,8 +7,9 @@ $(document).ready(function() {
 
     var paths = {};
     var sessionId;
-    var boardId = $('#boardId').data('value');
-    var userId = $('#userId').data('value');
+    var boardId = $('#board-id').data('value');
+    var userId = $('#user-id').data('value');
+
     var socket = io.connect('/');
     socket.on('connect', function() {
         sessionId = this.socket.sessionid;
