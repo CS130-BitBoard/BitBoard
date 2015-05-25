@@ -75,9 +75,9 @@ io.on('connection', function(socket) {
         socket.broadcast.to(boardId).emit('clearCanvas');
     });
 
-    socket.on('sendchatmessage', function(data) {
-        socket.emit('updatechatbox', socket.userid, data);
-        socket.broadcast.to(boardId).emit('updatechatbox', socket.userid, data);
+    socket.on('sendchatmessage', function(message) {
+        socket.emit('updatechatbox', socket.userid, message);
+        socket.broadcast.to(boardId).emit('updatechatbox', socket.userid, message);
     });
 
     socket.on('disconnect', function() {

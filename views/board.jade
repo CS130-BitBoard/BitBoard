@@ -6,18 +6,18 @@ block content
     div#user-id(data-value=userId)
 
     nav
-      input.save.btn#save(type="button")
-      input.btn.pencil#pencil(type="button")
+      input.icon.save#save(type="button")
+      input.icon.pencil#pencil(type="button")
       input.picker#colorPicker(type="text")
-      input.clear#clear(type="button", value="Clear")
+      input.button.small#clear(type="button", value="Clear")
 
     canvas#draw
 
   div#chatcontainer
     div#chat
     div.controls
-      input#data(type="text")
-      input.clear#send(type="button", value="Send")
+      input#current-message(type="text")
+      input.button.small#send-message(type="button", value="Send")
 
   script(src='https://cdnjs.cloudflare.com/ajax/libs/paper.js/0.9.22/paper-full.min.js')
   script(src='https://cdnjs.cloudflare.com/ajax/libs/spectrum/1.7.0/spectrum.min.js')

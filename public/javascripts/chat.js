@@ -1,28 +1,29 @@
 $(document).ready(function() {
     var socket = io.connect('/');
     socket.on('connect', function() {
-        socket.on('updatechatbox', function(userId, data) {
+        socket.on('updatechatbox', function(userId, message) {
+            // KLUDGE: this branch seems redundant
             if (userId === '') {
-                $('#chat').append(data + '<br>');
+                $('#chat').append(message + '<br>');
             } else {
-                if (data !== '') {
-                    $('#chat').append('<b>' + userId + ' :</b> ' + data + '<br>');
+                if (message !== '') {
+                    $('#chat').append('<b>' + userId + ' :</b> ' + message + '<br>');
                 }
             }
         });
     });
 
     function sendMessage() {
-        var message = $('#data').val();
-        $('#data').val('');
+        var message = $('#current-message').val();
+        $('#current-message').val('');
         socket.emit('sendchatmessage', message);
     }
 
-    $('#data').keypress(function(e) {
+    $('#current-message').keypress(function(e) {
         // Enter key:
         if (e.which == 13) {
             sendMessage();
         }
     });
-    $('#send').click(sendMessage);
+    $('#send-message').click(sendMessage);
 });
