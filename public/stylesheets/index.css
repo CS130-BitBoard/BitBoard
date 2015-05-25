@@ -21,6 +21,7 @@ h1, h2 {
     background: #2980b9;
     border: none;
     color: white;
+    cursor: pointer;
     display: block;
     font-family: "Lato";
     font-size: 24px;

@@ -4,22 +4,34 @@ block content
   h1 BitBoard
 
   a.button.login-button(href="#join-modal") Join Room
-  a.button.login-button(href="/boards/1234") Create Room
+  a.button.login-button(href="#create-modal") Create Room
 
   div.modal#join-modal
     div.dialog
       div.field
         h2 Your Name
-        input.modal-input(id="userid", type="text", maxlength="8")
+        input.modal-input.userid(type="text", maxlength="8", required="true")
 
       div.field
         h2 Room Code
-        input.modal-input.shortcode(id="boardid", type="text", maxlength="4")
+        input.modal-input.shortcode(type="text", maxlength="4", required="true")
 
       div.field
         h2 Password
         input.modal-input(type="password")
 
-      a.button.submit.invalid(href="#join-modal") Join
+      a.button.submit.join.invalid(href="#join-modal") Join
+
+  div.modal#create-modal
+    form.dialog(action="boards/", method="POST")
+      div.field
+        h2 Your Name
+        input.modal-input.userid(type="text", name="userid" maxlength="8", required="true")
+
+      div.field
+        h2 Password
+        input.modal-input(type="password", name="password")
+
+      input.button.submit.create(type="submit", value="Create")
 
   script(src='/javascripts/index.js')

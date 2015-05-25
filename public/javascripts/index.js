@@ -2,12 +2,10 @@ $(document).ready(function() {
     var validShortcodeLength = 4;
 
     // Close modal when clicked outside of:
-    $('.modal').click(function() {
-        window.location.assign('#');
-    });
-    // Prevent click events from .dialog child from bubbling up:
-    $('.modal .dialog').click(function(e) {
-        return false;
+    $('.modal').click(function(e) {
+        if ($(e.target).hasClass('modal')) {
+            window.location.assign('#');
+        }
     });
 
     $('.shortcode').on('keyup', function() {
@@ -19,9 +17,12 @@ $(document).ready(function() {
         }
     });
 
-    $('.submit').click(function() {
+    $('.submit.join').click(function() {
         if (!$(this).hasClass('invalid')) {
-            window.location.assign('/boards/' + $('#boardid').val() + '!' + $('#userid').val());
+            var $dialog = $(this).parent();
+            var boardId = $dialog.find('.shortcode').val();
+            var userId = $dialog.find('.userid').val();
+            window.location.assign('/boards/' + boardId + '?userid=' + userId);
         }
     });
 });

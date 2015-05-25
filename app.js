@@ -23,6 +23,7 @@ app.configure('development', function() {
 var indexRoutes = require('./routes');
 var boardRoutes = require('./routes/board');
 app.get('/', indexRoutes.index);
+app.post('/boards', boardRoutes.create);
 app.get('/boards/:boardId', boardRoutes.get);
 
 //Holds the current state of each board.
