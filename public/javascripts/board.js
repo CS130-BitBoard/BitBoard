@@ -19,15 +19,24 @@ $(document).ready(function() {
         socket.on('startPath', function(data, sessionId) {
             startPath(data, sessionId);
         });
-
         socket.on('continuePath', function(data, sessionId) {
             continuePath(data, sessionId);
             view.draw();
         });
-
         socket.on('clearCanvas', function() {
             clearCanvas();
             view.draw();
+        });
+
+        socket.on('updateChatbox', function(userId, message) {
+            // KLUDGE: this branch seems redundant
+            if (userId === '') {
+                $('#chat').append(message + '<br>');
+            } else {
+                if (message !== '') {
+                    $('#chat').append('<b>' + userId + ' :</b> ' + message + '<br>');
+                }
+            }
         });
     });
 
@@ -98,4 +107,18 @@ $(document).ready(function() {
             path.add(new Point(data.point.x, data.point.y));
         }
     }
+
+    // Chat:
+    function sendMessage() {
+        var message = $('#current-message').val();
+        $('#current-message').val('');
+        socket.emit('sendChatMessage', message);
+    }
+    $('#current-message').keypress(function(e) {
+        // Enter key:
+        if (e.which == 13) {
+            sendMessage();
+        }
+    });
+    $('#send-message').click(sendMessage);
 });
