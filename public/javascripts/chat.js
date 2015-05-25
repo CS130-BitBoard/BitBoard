@@ -1,7 +1,7 @@
 $(document).ready(function() {
     var socket = io.connect('/');
     socket.on('connect', function() {
-        socket.on('updatechatbox', function(userId, message) {
+        socket.on('updateChatbox', function(userId, message) {
             // KLUDGE: this branch seems redundant
             if (userId === '') {
                 $('#chat').append(message + '<br>');
@@ -16,7 +16,7 @@ $(document).ready(function() {
     function sendMessage() {
         var message = $('#current-message').val();
         $('#current-message').val('');
-        socket.emit('sendchatmessage', message);
+        socket.emit('sendChatMessage', message);
     }
 
     $('#current-message').keypress(function(e) {

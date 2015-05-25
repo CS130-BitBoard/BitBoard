@@ -45,8 +45,8 @@ io.on('connection', function(socket) {
             socket.userid = userid;
             users[boardid].push(userid);
         }
-        socket.emit('updatechatbox', '', ' you have joined');
-        socket.broadcast.to(boardId).emit('updatechatbox', '', ' ' + userid + ' has joined');
+        socket.emit('updateChatbox', '', ' you have joined');
+        socket.broadcast.to(boardId).emit('updateChatbox', '', ' ' + userid + ' has joined');
 
         console.log(users);
         //Replay messages to new clients
@@ -75,9 +75,9 @@ io.on('connection', function(socket) {
         socket.broadcast.to(boardId).emit('clearCanvas');
     });
 
-    socket.on('sendchatmessage', function(message) {
-        socket.emit('updatechatbox', socket.userid, message);
-        socket.broadcast.to(boardId).emit('updatechatbox', socket.userid, message);
+    socket.on('sendChatMessage', function(message) {
+        socket.emit('updateChatbox', socket.userid, message);
+        socket.broadcast.to(boardId).emit('updateChatbox', socket.userid, message);
     });
 
     socket.on('disconnect', function() {
@@ -86,7 +86,7 @@ io.on('connection', function(socket) {
             if (users[boardId].length == 0) {
                 delete users.boardId;
             }
-            socket.broadcast.to(boardId).emit('updatechatbox', '', socket.userid + ' disconnected');
+            socket.broadcast.to(boardId).emit('updateChatbox', '', socket.userid + ' disconnected');
         }
     });
 });
