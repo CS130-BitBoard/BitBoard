@@ -40,14 +40,13 @@ io.on('connection', function(socket) {
         if (!users[boardid]) {
             users[boardid] = [];
         }
-
-        //checking for existing username
-        if (users[boardid].indexOf(userid) != -1) {
-            //duplicate user found
-            // TODO: Do something
+        if(userid != null){
+            socket.userid = userid;
+            users[boardid].push(userid);
         }
-        socket.userid = userid;
-        users[boardid].push(userid);
+        socket.emit('updatechatbox', '', ' you have joined');
+        socket.broadcast.to(boardId).emit('updatechatbox', '',' '+ userid + ' has joined');
+
         console.log(users);
         //Replay messages to new clients
         if (board_state[boardId]) {
@@ -75,13 +74,19 @@ io.on('connection', function(socket) {
         socket.broadcast.to(boardId).emit('clearCanvas');
     });
 
+    socket.on('sendchatmessage', function(data) {
+        socket.emit('updatechatbox', socket.userid, data);
+        socket.broadcast.to(boardId).emit('updatechatbox', socket.userid, data);
+    });
+
     socket.on('disconnect', function() {
-        delete users[boardId][users[boardId].indexOf(socket.userid)];
-        if (users[boardId].length == 0) {
-            delete users.boardId;
-        }
-        socket.broadcast.to(boardId).emit('updatechat', '', socket.userid + ' disconnected');
-        socket.userid = null;
+        if(socket.userid != null){
+            delete users[boardId][users[boardId].indexOf(socket.userid)];
+            if (users[boardId].length == 0) {
+                delete users.boardId;
+            }
+            socket.broadcast.to(boardId).emit('updatechatbox', '', socket.userid + ' disconnected');
+        }   
     });
 
 });

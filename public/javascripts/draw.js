@@ -4,7 +4,6 @@ $(document).ready(function() {
     var url = $('#boardId').data('value').split('!', 2);
     var boardId = url[0];
     var userId = url[1];
-
     var socket = io.connect('/');
     socket.on('connect', function() {
         sessionId = this.socket.sessionid;

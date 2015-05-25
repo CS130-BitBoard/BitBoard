@@ -1,8 +1,50 @@
 #board {
     background: url('../images/bg.png') repeat #e4e4e4;
     width:70%;
+    float:left;
 }
 
+#chatcontainer {
+    width: 30%;
+    height: 650px;
+    border-left: 1px solid #ccc;
+    float: left;
+    box-sizing: border-box;
+    
+}
+
+#chat {
+    padding: 10px;
+    float: left;
+    height: calc(100% - 30px);
+    width: 100%;
+    box-sizing: border-box;
+    overflow-y: scroll;
+}
+
+.controls {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.controls input#send {
+    float: right;
+}
+
+.controls input#data{
+    margin: 0px;
+    width: calc(100% - 54px);
+    height: 30px;
+    padding: 10px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    float: right;
+    box-sizing: border-box;
+    display: none;
+
+}
 
 nav {
     display: flex;

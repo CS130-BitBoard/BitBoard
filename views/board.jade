@@ -11,6 +11,11 @@ block content
       input(type="button", class="clear", id="clear" value="Clear")
 
     canvas#draw
+  #chatcontainer
+    #chat
+    .controls
+      input(type="button", id="send", class="clear" value="Send")
+      input(type="text", id="data")
 
     script(type='text/paperscript', src='/javascripts/draw.js', canvas='draw')
     script(type='text/javascript').
@@ -19,3 +24,11 @@ block content
         showAlpha: true,
         showPalette: true
       });
+
+    script(type='text/javascript').
+      window.onload = function() {
+        if(!window.location.hash) {
+          window.location = window.location + '#loaded';
+          window.location.reload();
+      }
+
