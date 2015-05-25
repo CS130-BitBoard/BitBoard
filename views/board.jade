@@ -18,19 +18,12 @@ block content
       input(type="button", id="send", class="clear" value="Send")
       input(type="text", id="data")
 
-    script(type='text/paperscript', src='/javascripts/draw.js', canvas='draw')
-    script(type='text/javascript').
-      $("#colorPicker").spectrum({
-        color: "#000",
-        showAlpha: true,
-        showPalette: true
-      });
+  script(src='https://cdnjs.cloudflare.com/ajax/libs/paper.js/0.9.22/paper-full.min.js')
+  script(src='https://cdnjs.cloudflare.com/ajax/libs/spectrum/1.7.0/spectrum.min.js')
+  script(src='https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2014-11-29/FileSaver.min.js')
+  script(src='/javascripts/lib/Blob.js')
+  script(src='/javascripts/lib/canvas-toBlob.js')
+  script(src='/socket.io/socket.io.js')
 
-    script(type='text/javascript').
-      window.onload = function() {
-        if(!window.location.hash) {
-          window.location = window.location + '#loaded';
-          window.location.reload();
-        }
-      }
-
+  script(src='/javascripts/chat.js')
+  script(type='text/paperscript', src='/javascripts/draw.js', canvas='draw')

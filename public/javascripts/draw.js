@@ -1,4 +1,10 @@
 $(document).ready(function() {
+    $("#colorPicker").spectrum({
+      color: "#000",
+      showAlpha: true,
+      showPalette: true
+    });
+
     var paths = {};
     var sessionId;
     var boardId = $('#boardId').data('value');
