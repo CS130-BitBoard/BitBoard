@@ -68,6 +68,10 @@ nav {
     background-size: contain;
 }
 
+.selected {
+    background: #a9def4;
+}
+
 .selected#pencil {
     background: #a9def4;
     background-image: url('/images/pencil.png');

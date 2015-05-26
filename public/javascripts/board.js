@@ -20,6 +20,17 @@ function Canvas() {
         }
         view.draw();
     };
+
+    this.insertText = function(data, sessionId) {
+        if (data.tool === 'tool2') {
+            var text = new PointText(new Point(data.point.x, data.point.y));
+            text.justification = 'left';
+            text.fillColor = 'black';
+            text.size = 20;
+            text.content = window.prompt("Please enter some text:");
+            console.log('printed');
+        }
+    }
 }
 
 function Chatbox($chatContainer, socket, userId) {
@@ -77,6 +88,11 @@ $(document).ready(function() {
             canvas.clear();
         });
 
+        socket.on('insertText', function(data, sessionID) {
+            canvas.insertText(data, sessionId);
+            view.draw();
+        });
+
         socket.on('updateChatbox', function(userId, message) {
             chatbox.postMessage(userId, message);
         });
@@ -84,8 +100,16 @@ $(document).ready(function() {
 
     $('#pencil').click(function() {
         tool1.activate();
+        $('.selected').removeClass('selected');
         $('#colorPicker').spectrum('enable');
         $('#pencil').addClass('selected');
+    });
+
+
+    $('#text').click(function() {
+        tool2.activate();
+        $('.selected').removeClass('selected');
+        $('#text').addClass('selected');
     });
 
     $('#clear').click(function() {
@@ -128,6 +152,20 @@ $(document).ready(function() {
         canvas.continuePath(data, sessionId);
         socket.emit('continuePath', data, sessionId);
     };
+
+    tool2 = new Tool();
+
+    tool2.onMouseDown = function(event) {
+        var data = {
+            point: {
+                x: event.point.x,
+                y: event.point.y
+            },
+            tool: 'tool2'
+        };
+
+        canvas.insertText(data, sessionId);
+    }
 
     $('#current-message').keypress(function(e) {
         // Enter key:
