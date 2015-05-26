@@ -19,17 +19,24 @@ app.configure('development', function() {
     app.use(express.errorHandler());
 });
 
-
 var indexRoutes = require('./routes');
 var boardRoutes = require('./routes/board');
 app.get('/', indexRoutes.index);
 app.post('/boards', boardRoutes.create);
 app.get('/boards/:boardId', boardRoutes.get);
 
-// Holds the current state of each board.
-var boardStates = {};
-// Key:boardID Value: list of users
-var users = {};
+function StateMessage(type, data, id) {
+    this.type = type;
+    this.data = data;
+    this.sessionId = id;
+}
+function Board() {
+    this.users = []; // list of userIds (Strings)
+    this.stateMessages = []; // list of StateMessages
+}
+
+// Dictionary of boards. key: boardId, value: Board
+var boards = {};
 
 io.on('connection', function(socket) {
     var boardId = '';
@@ -37,43 +44,36 @@ io.on('connection', function(socket) {
     socket.on('joinBoard', function(newBoardId, userId) {
         boardId = newBoardId;
         socket.join(boardId);
-        if (!users[boardId]) {
-            users[boardId] = [];
+
+        if (!boards[boardId]) {
+            boards[boardId] = new Board();
         }
-        if (userId != null) {
+
+        // TODO: should this function be allowed to continue with a falsey userId?
+        if (userId) {
             socket.userId = userId;
-            users[boardId].push(userId);
+            boards[boardId].users.push(userId);
         }
+
         socket.emit('updateChatbox', '', ' you have joined');
         socket.broadcast.to(boardId).emit('updateChatbox', '', ' ' + userId + ' has joined');
 
-        // TODO: remove this
-        console.log('users:', users);
-        console.log('boardStates:', boardStates);
-
         // Replay messages to new clients
-        if (boardStates[boardId]) {
-            var messages = boardStates[boardId];
-            for (var i = 0; i < messages.length; i++) {
-                var m = messages[i];
-                socket.emit(m.type, m.data, m.sessionId);
-            }
-        } else {
-            // We are the first in the room, create an empty state
-            boardStates[boardId] = [];
-        }
+        boards[boardId].stateMessages.forEach(function(sm) {
+            socket.emit(sm.type, sm.data, sm.sessionId);
+        });
     });
 
     socket.on('startPath', function(data, sessionId) {
-        boardStates[boardId].push(new Message('startPath', data, sessionId));
+        boards[boardId].stateMessages.push(new StateMessage('startPath', data, sessionId));
         socket.broadcast.to(boardId).emit('startPath', data, sessionId);
     });
     socket.on('continuePath', function(data, sessionId) {
-        boardStates[boardId].push(new Message('continuePath', data, sessionId));
+        boards[boardId].stateMessages.push(new StateMessage('continuePath', data, sessionId));
         socket.broadcast.to(boardId).emit('continuePath', data, sessionId);
     });
     socket.on('clearCanvas', function() {
-        boardStates[boardId].length = 0; // Clear the array
+        boards[boardId].stateMessages = [];
         socket.broadcast.to(boardId).emit('clearCanvas');
     });
 
@@ -83,17 +83,15 @@ io.on('connection', function(socket) {
 
     socket.on('disconnect', function() {
         if (socket.userId != null) {
-            delete users[boardId][users[boardId].indexOf(socket.userId)];
-            if (users[boardId].length == 0) {
-                delete users.boardId;
+            var disconnectedUserIndex = boards[boardId].users.indexOf(socket.userId)
+            boards[boardId].users.splice(disconnectedUserIndex, 1);
+
+            // TODO: Are we sure we don't want to preserve boards for future use?
+            if (boards[boardId].users.length === 0) {
+                delete boards[boardId];
             }
+
             socket.broadcast.to(boardId).emit('updateChatbox', '', socket.userId + ' disconnected');
         }
     });
 });
-
-function Message(type, data, id) {
-    this.type = type;
-    this.data = data;
-    this.sessionId = id;
-}
