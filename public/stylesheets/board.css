@@ -1,5 +1,5 @@
 #board {
-    background: url('../images/bg.png') repeat #e4e4e4;
+    /*background: url('../images/bg.png') repeat #e4e4e4;*/
     width:70%;
     float:left;
 }
@@ -10,6 +10,7 @@
     border-left: 1px solid #ccc;
     float: left;
     box-sizing: border-box;
+    background-color: #fcfdfe;
 }
 
 .chat {

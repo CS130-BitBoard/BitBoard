@@ -35,8 +35,8 @@ function Canvas() {
         if (data.tool === 'tool2') {
             var text = new PointText(new Point(data.point.x, data.point.y));
             text.justification = 'left';
-            text.fillColor = 'black';
-            text.size = 20;
+            text.fillColor = data.color;
+            text.fontSize = 20;
             text.content = window.prompt("Please enter some text:");
         }
     }
@@ -176,14 +176,15 @@ $(document).ready(function() {
                 x: event.point.x,
                 y: event.point.y
             },
-            tool: 'tool2'
+            tool: 'tool2',
+            color: $('#colorPicker').spectrum('get').toString()
         };
 
         canvas.insertText(data, sessionId);
     }
 
     tool3 = new Tool();
-    tool3.onMouseDown = function (event) {
+    tool3.onMouseDown = function(event) {
         var data = {
             point: {
                 x: event.point.x,
