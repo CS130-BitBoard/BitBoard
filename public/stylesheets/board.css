@@ -1,17 +1,32 @@
+.wrapper {
+    overflow-x: hidden;
+    position: relative;
+    height: 100%;
+}
+
 #board {
     /*background: url('../images/bg.png') repeat #e4e4e4;*/
-    width:70%;
-    float:left;
+    overflow-x: auto;
+    position: relative;
+    height: 100%;
 }
 
 #chat-container {
+    position: absolute;
+    top: 51px;
+    right: 0;
     width: 30%;
-    height: 100%;
+    height: calc(100% - 51px);
     border-left: 1px solid #ccc;
-    float: left;
     box-sizing: border-box;
-    background-color: #fcfdfe;
+    background-color: #f0f0f0;
+    padding: 5px;
+    padding-bottom: 10px;
+    transition: right 0.3s ease-in;
 }
+    #chat-container.closed {
+        right: -30%;
+    }
 
 .chat {
     padding: 10px;
@@ -19,7 +34,7 @@
     height: calc(100% - 30px);
     width: 100%;
     box-sizing: border-box;
-    overflow-y: scroll;
+    overflow-y: auto;
 }
 
 .status-message {
@@ -48,50 +63,69 @@
     }
 
 nav {
+    position: fixed;
+    width: 100%;
     display: flex;
     display: -webkit-flex;
+    align-items: center;
+    border-bottom: 1px solid #2c3e50;
+    background: #f5f5f5;
+    padding: 5px;
+    height: 51px;
+    box-sizing: border-box;
 }
+
+.nav-icons, .nav-buttons {
+    display: flex;
+}
+    .nav-buttons {
+        margin-left: auto;
+        margin-right: 5px;
+    }
+        .nav-buttons .button.small {
+            margin-left: 10px;
+        }
 
 .icon {
     height: 30px;
     width: 30px;
-    padding: 0;
     margin-right: 20px;
     border: 0;
     border-radius: 4px;
-    background: #53bee8;
-    outline: none;
-}
-
-.pencil{
-    background-image: url('/images/pencil.png');
+    background-size: 30px;
     background-repeat: no-repeat;
-    background-size: contain;
+    background-position: 50%;
+    padding: 5px;
+    outline: none;
+    cursor: pointer;
 }
 
 .selected {
-    background: #a9def4;
+    background-color: #a9def4;
 }
 
-.selected#pencil {
-    background: #a9def4;
+#save{
+    background-image: url('/images/floppy.png');
+}
+#pencil {
     background-image: url('/images/pencil.png');
-    background-repeat: no-repeat;
-    background-size: contain;
 }
+    #pencil.selected {
+        background-image: url('/images/pencil-filled.png');
+    }
+#text {
+    background-image: url('/images/text.png');
+}
+    #text.selected {
+        background-image: url('/images/text-filled.png');
+    }
+#eraser {
+    background-image: url('/images/eraser.png');
+}
+    #eraser.selected {
+        background-image: url('/images/eraser-filled.png');
+    }
 
-.save{
-    background-image: url('/images/floppy.png');
-    background-repeat: no-repeat;
-    background-size: contain;
-}
-
-.selected#save {
-    background: #a9def4;
-    background-image: url('/images/floppy.png');
-    background-repeat: no-repeat;
-    background-size: contain;
-}
 .button.small {
     height: 30px;
     width: auto;
@@ -99,16 +133,60 @@ nav {
     border: 0;
     border-radius: 4px;
     font-size: 15px;
+    font-weight: 300;
     margin: 0;
-    margin-left: 20px;
     outline: none;
     box-sizing: border-box;
     min-width: 0px;
     padding: 6px;
+    text-transform: none;
+}
+
+#clear {
+    background: #e74c3c;
 }
 
 canvas#draw {
-    height: 650px;
-    width: 100%;
-    box-sizing: border-box;
+    background-color: #fff;
+    border: 15px solid #f5f5f5;
+    cursor: crosshair;
+    margin: auto;
+    margin-top: 51px;
+    display: block;
+    transition: margin 0.2s ease-in;
+}
+    canvas#draw.left {
+        margin-left: 0;
+    }
+
+/* Spectrum overrides: */
+.sp-replacer {
+    border: none;
+    padding: 0;
+    display: flex;
+    align-items: center;
+}
+.sp-preview {
+    border-color: #2c3e50;
+    margin: 0;
+    width: auto;
+    height: auto;
+}
+.sp-preview-inner {
+    position: static;
+    width: 30px;
+    height: 30px;
+}
+.sp-dd {
+    display: none;
+}
+.sp-container {
+    background-color: #f5f5f5;
+    border-color: #2c3e50;
+}
+.sp-palette-container {
+    width: 80px;
+}
+.sp-palette .sp-thumb-el.sp-thumb-active {
+    border-color: #a9def4;
 }
