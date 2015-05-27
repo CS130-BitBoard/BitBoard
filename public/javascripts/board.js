@@ -85,20 +85,6 @@ function Chatbox($chatContainer, socket, userId) {
 }
 
 $(document).ready(function() {
-    var CANVAS_WIDTH_TO_HEIGHT_RATIO = 16/9;
-    var MAX_CANVAS_WIDTH = 800;
-    var MAX_CANVAS_HEIGHT = MAX_CANVAS_WIDTH / CANVAS_WIDTH_TO_HEIGHT_RATIO;
-
-    $(window).resize(function() {
-        var windowWidth = $(this).width();
-        var windowHeight = $(this).height();
-
-        var newWidth = (windowWidth <= MAX_CANVAS_WIDTH) ? windowWidth : MAX_CANVAS_WIDTH;
-        var newHeight = (windowHeight <= MAX_CANVAS_HEIGHT) ? windowHeight : MAX_CANVAS_HEIGHT;
-
-        paper.view.viewSize = [newWidth, newHeight];
-    });
-
     $("#colorPicker").spectrum({
         color: "#000",
         showPalette: true,
