@@ -12,14 +12,15 @@ block content
       input.icon.eraser#eraser(type="button", value="ERASER")
       input.picker#colorPicker(type="text")
       input.button.small#clear(type="button", value="Clear")
+      input.button.small#toggle-chat(type="button", value="Chat")
 
     canvas#draw
 
-  div#chat-container
-    div.chat
-    div.controls
-      input#current-message(type="text")
-      input.button.small#send-message(type="button", value="Send")
+    div#chat-container
+      div.chat
+      div.controls
+        input#current-message(type="text")
+        input.button.small#send-message(type="button", value="Send")
 
   script(src='https://cdnjs.cloudflare.com/ajax/libs/paper.js/0.9.22/paper-full.min.js')
   script(src='https://cdnjs.cloudflare.com/ajax/libs/spectrum/1.7.0/spectrum.min.js')
