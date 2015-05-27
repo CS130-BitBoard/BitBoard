@@ -1,23 +1,24 @@
 extends layout
 
 block content
-  div#board
-    div#board-id(data-value=boardId)
-    div#user-id(data-value=userId)
+  div.wrapper
+    div#board
+      div#board-id(data-value=boardId)
+      div#user-id(data-value=userId)
 
-    nav
-      div.nav-icons
-        div.icon.save#save
-        div.icon.pencil#pencil
-        div.icon.text#text
-        div.icon.eraser#eraser
-        input#colorPicker(type="text")
+      nav
+        div.nav-icons
+          div.icon.save#save
+          div.icon.pencil#pencil
+          div.icon.text#text
+          div.icon.eraser#eraser
+          input#colorPicker(type="text")
 
-      div.nav-buttons
-        input.button.small#toggle-chat(type="button", value="Chat")
-        input.button.small#clear(type="button", value="Clear")
+        div.nav-buttons
+          input.button.small#toggle-chat(type="button", value="Chat")
+          input.button.small#clear(type="button", value="Clear")
 
-    canvas#draw
+      canvas#draw(width="800", height="450")
 
     div#chat-container.closed
       div.chat

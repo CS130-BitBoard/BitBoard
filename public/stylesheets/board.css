@@ -1,6 +1,12 @@
+.wrapper {
+    overflow-x: hidden;
+    position: relative;
+    height: 100%;
+}
+
 #board {
     /*background: url('../images/bg.png') repeat #e4e4e4;*/
-    overflow-x: hidden;
+    overflow-x: auto;
     position: relative;
     height: 100%;
 }
