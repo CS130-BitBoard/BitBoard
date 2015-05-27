@@ -139,11 +139,18 @@ nav {
 }
 
 canvas#draw {
-    height: 100%;
-    width: 100%;
     background-color: #fff;
     cursor: crosshair;
+    margin: auto;
+    display: block;
+    -webkit-box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.8);
+       -moz-box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.8);
+            box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.8);
+    transition: margin 0.2s ease-in;
 }
+    canvas#draw.left {
+        margin-left: 0;
+    }
 
 /* Spectrum overrides: */
 .sp-replacer {
