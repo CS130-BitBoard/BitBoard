@@ -13,13 +13,20 @@ function Canvas() {
     };
 
     this.startPath = function(data, sessionId) {
-        paths[sessionId] = new Path();
-        paths[sessionId].strokeColor = data.color;
+        var path = new Path();
+        path.strokeColor = data.color;
+        path.strokeWidth = 5;
+        path.strokeCap = 'round';
+        path.strokeJoin = 'round';
+
         if (data.tool === 'tool3') {
-            paths[sessionId].strokeColor = 'white';
-            paths[sessionId].strokeWidth =  10;
+            path.strokeColor = 'white';
+            path.strokeWidth = 50;
         }
-        paths[sessionId].add(new Point(data.point.x, data.point.y));
+
+        path.add(new Point(data.point.x, data.point.y));
+        paths[sessionId] = path;
+
         view.draw();
     };
 
