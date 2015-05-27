@@ -116,7 +116,7 @@ $(document).ready(function() {
             canvas.clear();
         });
 
-        socket.on('insertText', function(data, sessionID) {
+        socket.on('insertText', function(data, sessionId) {
             canvas.insertText(data, sessionId);
             view.draw();
         });
@@ -125,6 +125,51 @@ $(document).ready(function() {
             chatbox.postMessage(userId, message);
         });
     });
+
+    Tool.prototype.createDataFromPoint = function(point) {
+        return {
+            point: {
+                x: point.x,
+                y: point.y
+            },
+            color: this.color || $('#colorPicker').spectrum('get').toString(),
+            tool: this.toolName || 'pencilTool'
+        };
+    };
+    Tool.prototype.onMouseDown = function(event) {
+        var data = this.createDataFromPoint(event.point)
+
+        if (this.toolName === 'textTool') {
+            canvas.insertText(data, sessionId);
+            socket.emit('insertText', data, sessionId);
+            return;
+        }
+
+        canvas.startPath(data, sessionId);
+        socket.emit('startPath', data, sessionId);
+    };
+    Tool.prototype.onMouseDrag = function(event) {
+        var data = this.createDataFromPoint(event.point)
+
+        if (this.toolName === 'textTool') {
+            return;
+        }
+
+        canvas.continuePath(data, sessionId);
+        socket.emit('continuePath', data, sessionId);
+    };
+
+    function CustomTool(options) {
+        Tool.call(this);
+        this.toolName = options.toolName || 'pencilTool';
+        this.color = options.color;
+    }
+    CustomTool.prototype = Object.create(Tool.prototype);
+    CustomTool.prototype.constructor = CustomTool;
+
+    var pencilTool = new CustomTool({ toolName: 'pencilTool' });
+    var eraserTool = new CustomTool({ toolName: 'eraserTool', color: 'white' });
+    var textTool = new CustomTool({ toolName: 'textTool' });
 
     $('#pencil').click(function() {
         pencilTool.activate();
@@ -160,75 +205,6 @@ $(document).ready(function() {
     $('#toggle-chat').click(function() {
         chatbox.toggle();
     });
-
-    function onMouseDown(event) {
-        var color = $('#colorPicker').spectrum('get').toString();
-        var data = {
-            point: {
-                x: event.point.x,
-                y: event.point.y
-            },
-            color: color
-        };
-        canvas.startPath(data, sessionId);
-        socket.emit('startPath', data, sessionId);
-    }
-
-    //pencil
-    pencilTool = new Tool();
-    pencilTool.onMouseDown = onMouseDown;
-
-    pencilTool.onMouseDrag = function(event) {
-        var data = {
-            point: {
-                x: event.point.x,
-                y: event.point.y
-            },
-            tool: 'pencilTool'
-        };
-        canvas.continuePath(data, sessionId);
-        socket.emit('continuePath', data, sessionId);
-    };
-
-    textTool = new Tool();
-
-    textTool.onMouseDown = function(event) {
-        var data = {
-            point: {
-                x: event.point.x,
-                y: event.point.y
-            },
-            tool: 'textTool',
-            color: $('#colorPicker').spectrum('get').toString()
-        };
-
-        canvas.insertText(data, sessionId);
-    }
-
-    eraserTool = new Tool();
-    eraserTool.onMouseDown = function(event) {
-        var data = {
-            point: {
-                x: event.point.x,
-                y: event.point.y
-            },
-            tool: 'eraserTool'
-        };
-        canvas.startPath(data, sessionId);
-        socket.emit('startPath', data, sessionId);
-    };
-
-    eraserTool.onMouseDrag = function(event) {
-        var data = {
-            point: {
-                x: event.point.x,
-                y: event.point.y
-            },
-            tool: 'eraserTool'
-        };
-        canvas.continuePath(data, sessionId);
-        socket.emit('continuePath', data, sessionId);
-    };
 
     $('#current-message').keypress(function(e) {
         // Enter key:
