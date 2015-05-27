@@ -63,6 +63,8 @@
     }
 
 nav {
+    position: fixed;
+    width: 100%;
     display: flex;
     display: -webkit-flex;
     align-items: center;
@@ -146,12 +148,11 @@ nav {
 
 canvas#draw {
     background-color: #fff;
+    border: 15px solid #f5f5f5;
     cursor: crosshair;
     margin: auto;
+    margin-top: 51px;
     display: block;
-    -webkit-box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.8);
-       -moz-box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.8);
-            box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.8);
     transition: margin 0.2s ease-in;
 }
     canvas#draw.left {
