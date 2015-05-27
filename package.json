@@ -10,7 +10,7 @@
   "dependencies": {
     "express": "3.5.0",
     "jade": "*",
-    "socket.io": "^0.9.16"
+    "socket.io": "^1.0.6"
   },
   "devDependencies": {
     "jscs": "^1.13.1",

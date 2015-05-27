@@ -83,7 +83,7 @@ $(document).ready(function() {
     var chatbox = new Chatbox($('#chat-container'), socket, userId);
 
     socket.on('connect', function() {
-        sessionId = this.socket.sessionid;
+        sessionId = socket.io.engine.id;
 
         socket.emit('joinBoard', boardId, userId);
 
