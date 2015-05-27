@@ -122,7 +122,6 @@ $(document).ready(function() {
         $('#pencil').addClass('selected');
     });
 
-
     $('#text').click(function() {
         tool2.activate();
         $('.selected').removeClass('selected');
@@ -228,4 +227,6 @@ $(document).ready(function() {
     });
 
     $('#send-message').click(chatbox.sendCurrentMessage);
+
+    $('#pencil').click();
 });
