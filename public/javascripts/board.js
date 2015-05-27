@@ -77,9 +77,11 @@ function Chatbox($chatContainer, socket, userId) {
 
 $(document).ready(function() {
     $("#colorPicker").spectrum({
-      color: "#000",
-      showAlpha: true,
-      showPalette: true
+        color: "#000",
+        showPalette: true,
+        hideAfterPaletteSelect: true,
+        showButtons: false,
+        preferredFormat: "rgb"
     });
 
     var sessionId;
