@@ -6,14 +6,16 @@ block content
     div#user-id(data-value=userId)
 
     nav
-      div.icon.save#save
-      div.icon.pencil#pencil
-      div.icon.text#text
-      div.icon.eraser#eraser
+      div.nav-icons
+        div.icon.save#save
+        div.icon.pencil#pencil
+        div.icon.text#text
+        div.icon.eraser#eraser
+        input#colorPicker(type="text")
 
-      input#colorPicker(type="text")
-      input.button.small#clear(type="button", value="Clear")
-      input.button.small#toggle-chat(type="button", value="Chat")
+      div.nav-buttons
+        input.button.small#toggle-chat(type="button", value="Chat")
+        input.button.small#clear(type="button", value="Clear")
 
     canvas#draw
 
