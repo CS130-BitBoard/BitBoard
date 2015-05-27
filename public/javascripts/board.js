@@ -3,19 +3,29 @@ function Canvas() {
 
     this.clear = function() {
         project.activeLayer.removeChildren();
+        // var rect = new Rectangle();
+        // rect.left = 0;
+        // rect.right = 0;
+        // rect.top = 0;
+        // rect.bottom = 0;
+        // rect.fillColor = 'white';
         view.draw();
     };
 
     this.startPath = function(data, sessionId) {
         paths[sessionId] = new Path();
         paths[sessionId].strokeColor = data.color;
+        if (data.tool === 'tool3') {
+            paths[sessionId].strokeColor = 'white';
+            paths[sessionId].strokeWidth =  10;
+        }
         paths[sessionId].add(new Point(data.point.x, data.point.y));
         view.draw();
     };
 
     this.continuePath = function(data, sessionId) {
         var path = paths[sessionId];
-        if (data.tool === 'tool1') {
+        if (data.tool === 'tool1' || data.tool === 'tool3') {
             path.add(new Point(data.point.x, data.point.y));
         }
         view.draw();
@@ -28,7 +38,6 @@ function Canvas() {
             text.fillColor = 'black';
             text.size = 20;
             text.content = window.prompt("Please enter some text:");
-            console.log('printed');
         }
     }
 }
@@ -112,6 +121,12 @@ $(document).ready(function() {
         $('#text').addClass('selected');
     });
 
+    $('#eraser').click(function() {
+        tool3.activate();
+        $('.selected').removeClass('selected');
+        $('#eraser').addClass('selected');
+    });
+
     $('#clear').click(function() {
         canvas.clear();
         $('#pencil').removeClass('selected');
@@ -166,6 +181,31 @@ $(document).ready(function() {
 
         canvas.insertText(data, sessionId);
     }
+
+    tool3 = new Tool();
+    tool3.onMouseDown = function (event) {
+        var data = {
+            point: {
+                x: event.point.x,
+                y: event.point.y
+            },
+            tool: 'tool3'
+        };
+        canvas.startPath(data, sessionId);
+        socket.emit('startPath', data, sessionId);
+    };
+
+    tool3.onMouseDrag = function(event) {
+        var data = {
+            point: {
+                x: event.point.x,
+                y: event.point.y
+            },
+            tool: 'tool3'
+        };
+        canvas.continuePath(data, sessionId);
+        socket.emit('continuePath', data, sessionId);
+    };
 
     $('#current-message').keypress(function(e) {
         // Enter key:
