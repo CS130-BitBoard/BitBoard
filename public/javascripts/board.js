@@ -19,7 +19,7 @@ function Canvas() {
         path.strokeCap = 'round';
         path.strokeJoin = 'round';
 
-        if (data.tool === 'tool3') {
+        if (data.tool === 'eraserTool') {
             path.strokeColor = 'white';
             path.strokeWidth = 50;
         }
@@ -32,14 +32,14 @@ function Canvas() {
 
     this.continuePath = function(data, sessionId) {
         var path = paths[sessionId];
-        if (data.tool === 'tool1' || data.tool === 'tool3') {
+        if (data.tool === 'pencilTool' || data.tool === 'eraserTool') {
             path.add(new Point(data.point.x, data.point.y));
         }
         view.draw();
     };
 
     this.insertText = function(data, sessionId) {
-        if (data.tool === 'tool2') {
+        if (data.tool === 'textTool') {
             var text = new PointText(new Point(data.point.x, data.point.y));
             text.justification = 'left';
             text.fillColor = data.color;
@@ -127,20 +127,20 @@ $(document).ready(function() {
     });
 
     $('#pencil').click(function() {
-        tool1.activate();
+        pencilTool.activate();
         $('.selected').removeClass('selected');
         $('#colorPicker').spectrum('enable');
         $('#pencil').addClass('selected');
     });
 
     $('#text').click(function() {
-        tool2.activate();
+        textTool.activate();
         $('.selected').removeClass('selected');
         $('#text').addClass('selected');
     });
 
     $('#eraser').click(function() {
-        tool3.activate();
+        eraserTool.activate();
         $('.selected').removeClass('selected');
         $('#eraser').addClass('selected');
     });
@@ -175,56 +175,56 @@ $(document).ready(function() {
     }
 
     //pencil
-    tool1 = new Tool();
-    tool1.onMouseDown = onMouseDown;
+    pencilTool = new Tool();
+    pencilTool.onMouseDown = onMouseDown;
 
-    tool1.onMouseDrag = function(event) {
+    pencilTool.onMouseDrag = function(event) {
         var data = {
             point: {
                 x: event.point.x,
                 y: event.point.y
             },
-            tool: 'tool1'
+            tool: 'pencilTool'
         };
         canvas.continuePath(data, sessionId);
         socket.emit('continuePath', data, sessionId);
     };
 
-    tool2 = new Tool();
+    textTool = new Tool();
 
-    tool2.onMouseDown = function(event) {
+    textTool.onMouseDown = function(event) {
         var data = {
             point: {
                 x: event.point.x,
                 y: event.point.y
             },
-            tool: 'tool2',
+            tool: 'textTool',
             color: $('#colorPicker').spectrum('get').toString()
         };
 
         canvas.insertText(data, sessionId);
     }
 
-    tool3 = new Tool();
-    tool3.onMouseDown = function(event) {
+    eraserTool = new Tool();
+    eraserTool.onMouseDown = function(event) {
         var data = {
             point: {
                 x: event.point.x,
                 y: event.point.y
             },
-            tool: 'tool3'
+            tool: 'eraserTool'
         };
         canvas.startPath(data, sessionId);
         socket.emit('startPath', data, sessionId);
     };
 
-    tool3.onMouseDrag = function(event) {
+    eraserTool.onMouseDrag = function(event) {
         var data = {
             point: {
                 x: event.point.x,
                 y: event.point.y
             },
-            tool: 'tool3'
+            tool: 'eraserTool'
         };
         canvas.continuePath(data, sessionId);
         socket.emit('continuePath', data, sessionId);
