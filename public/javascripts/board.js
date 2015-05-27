@@ -65,6 +65,14 @@ function Chatbox($chatContainer, socket, userId) {
         postUserMessage(userId, message);
         socket.emit('sendChatMessage', message);
     };
+
+    this.toggle = function() {
+        if ($chatContainer.hasClass('closed')) {
+            $chatContainer.removeClass('closed');
+        } else {
+            $chatContainer.addClass('closed');
+        }
+    };
 }
 
 $(document).ready(function() {
@@ -137,6 +145,10 @@ $(document).ready(function() {
         $('canvas#draw')[0].toBlob(function(blob) {
             saveAs(blob, 'test.png');
         });
+    });
+
+    $('#toggle-chat').click(function() {
+        chatbox.toggle();
     });
 
     function onMouseDown(event) {
