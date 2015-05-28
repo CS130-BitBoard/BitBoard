@@ -97,7 +97,7 @@ $(document).ready(function() {
     var boardId = $('#board-id').data('value');
     var userId = $('#user-id').data('value');
 
-    var socket = io.connect('/');
+    var socket = io.connect('http://localhost:3000/'); // This is stupid but is required to fix weird issues.
     var canvas = new Canvas();
     var chatbox = new Chatbox($('#chat-container'), socket, userId);
 
