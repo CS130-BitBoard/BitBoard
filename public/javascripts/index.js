@@ -1,5 +1,6 @@
 $(document).ready(function() {
     var validShortcodeLength = 4;
+    var validUsernameLength = 2;
 
     // Close modal when clicked outside of:
     $('.modal').click(function(e) {
@@ -8,8 +9,16 @@ $(document).ready(function() {
         }
     });
 
-    $('.shortcode').on('keyup', function() {
-        if ($(this).val().length === validShortcodeLength) {
+    function shortcodeValid() {
+        return $('.shortcode').val().length === validShortcodeLength;
+    }
+
+    function useridValid() {
+        return $('.userid').val().length >= validUsernameLength;
+    }
+
+    $('.shortcode, .userid').on('keyup', function() {
+        if (shortcodeValid() && useridValid()) {
             // TODO: validate on backend if it is legitimate.
             $('.submit').removeClass('invalid');
         } else {
