@@ -77,8 +77,8 @@
 nav {
     position: fixed;
     width: 100%;
-    display: flex;
     display: -webkit-flex;
+    display: flex;
     align-items: center;
     border-bottom: 1px solid #2c3e50;
     background: #f5f5f5;
@@ -88,13 +88,18 @@ nav {
 }
 
 .nav-icons, .nav-buttons {
+    display: -webkit-flex;
     display: flex;
 }
     .nav-buttons {
         margin-left: auto;
         margin-right: 5px;
     }
+        .wrapper[data-mobile="true"] .nav-buttons {
+            padding-top: 3px;
+        }
         .nav-buttons .button.small {
+            display:inline-block;
             margin-left: 10px;
         }
 
@@ -168,6 +173,7 @@ nav {
     min-width: 0px;
     padding: 6px;
     text-transform: none;
+    -webkit-appearance: none;
 }
 
 #clear {
@@ -193,6 +199,7 @@ canvas#draw {
 .sp-replacer {
     border: none;
     padding: 0;
+    display: -webkit-flex;
     display: flex;
     align-items: center;
 }
