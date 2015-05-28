@@ -2,7 +2,8 @@ module.exports.get = function(req, res) {
     res.render('board', {
         title: 'BitBoard',
         boardId: req.params.boardId,
-        userId: req.query.userid
+        userId: req.query.userid,
+        mobile: !!req.query.mobile ? 'true' : 'false'
     });
 };
 
