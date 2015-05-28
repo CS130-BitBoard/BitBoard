@@ -15,14 +15,9 @@ function Canvas() {
     this.startPath = function(data, sessionId) {
         var path = new Path();
         path.strokeColor = data.color;
-        path.strokeWidth = 5;
+        path.strokeWidth = data.width;
         path.strokeCap = 'round';
         path.strokeJoin = 'round';
-
-        if (data.tool === 'eraserTool') {
-            path.strokeColor = 'white';
-            path.strokeWidth = 50;
-        }
 
         path.add(new Point(data.point.x, data.point.y));
         paths[sessionId] = path;
@@ -39,13 +34,11 @@ function Canvas() {
     };
 
     this.insertText = function(data, sessionId) {
-        if (data.tool === 'textTool') {
             var text = new PointText(new Point(data.point.x, data.point.y));
             text.justification = 'left';
             text.fillColor = data.color;
             text.fontSize = 20;
             text.content = window.prompt("Please enter some text:");
-        }
     }
 }
 
@@ -133,43 +126,58 @@ $(document).ready(function() {
                 y: point.y
             },
             color: this.color || $('#colorPicker').spectrum('get').toString(),
-            tool: this.toolName || 'pencilTool'
+            tool: this.toolName || 'pencilTool',
+            width: this.width || 5
         };
     };
     Tool.prototype.onMouseDown = function(event) {
-        var data = this.createDataFromPoint(event.point)
-
-        if (this.toolName === 'textTool') {
-            canvas.insertText(data, sessionId);
-            socket.emit('insertText', data, sessionId);
-            return;
-        }
-
-        canvas.startPath(data, sessionId);
-        socket.emit('startPath', data, sessionId);
+        var data = this.createDataFromPoint(event.point);
+        this.mouseDownEvent(data);
     };
     Tool.prototype.onMouseDrag = function(event) {
-        var data = this.createDataFromPoint(event.point)
+        var data = this.createDataFromPoint(event.point);
+        this.mouseDragEvent(data);
+    };
 
-        if (this.toolName === 'textTool') {
-            return;
-        }
+    //Generic tool for drawing on the canvas
+    function DrawTool(options) {
+        Tool.call(this);
+        this.toolName = options.toolName || 'pencilTool';
+        this.color = options.color;
+        this.width = options.width;
+    }
+    DrawTool.prototype = Object.create(Tool.prototype);
+    DrawTool.prototype.constructor = DrawTool;
 
+    DrawTool.prototype.mouseDownEvent = function(data) {
+        canvas.startPath(data, sessionId);
+        socket.emit('startPath', data, sessionId);
+    }
+    DrawTool.prototype.mouseDragEvent = function(data) {
         canvas.continuePath(data, sessionId);
         socket.emit('continuePath', data, sessionId);
     };
 
-    function CustomTool(options) {
+    //Tool for adding text to the canvas
+    function TextTool() {
         Tool.call(this);
-        this.toolName = options.toolName || 'pencilTool';
-        this.color = options.color;
     }
-    CustomTool.prototype = Object.create(Tool.prototype);
-    CustomTool.prototype.constructor = CustomTool;
+    TextTool.prototype = Object.create(Tool.prototype);
+    TextTool.prototype.constructor = TextTool;
 
-    var pencilTool = new CustomTool({ toolName: 'pencilTool' });
-    var eraserTool = new CustomTool({ toolName: 'eraserTool', color: 'white' });
-    var textTool = new CustomTool({ toolName: 'textTool' });
+    TextTool.prototype.mouseDownEvent = function(data) {
+        console.log("called");
+        canvas.insertText(data, sessionId);
+        socket.emit('insertText', data, sessionId);
+        return;
+    }
+    TextTool.prototype.mouseDragEvent = function(data) {
+        //No-op function
+    };
+
+    var pencilTool = new DrawTool({ toolName: 'pencilTool' });
+    var eraserTool = new DrawTool({ toolName: 'eraserTool', color: 'white', width: 20 });
+    var textTool = new TextTool();
 
     $('#pencil').click(function() {
         pencilTool.activate();
