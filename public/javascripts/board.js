@@ -34,11 +34,11 @@ function Canvas() {
     };
 
     this.insertText = function(data, sessionId) {
-            var text = new PointText(new Point(data.point.x, data.point.y));
-            text.justification = 'left';
-            text.fillColor = data.color;
-            text.fontSize = 20;
-            text.content = window.prompt("Please enter some text:");
+        var text = new PointText(new Point(data.point.x, data.point.y));
+        text.justification = 'left';
+        text.fillColor = data.color;
+        text.fontSize = 20;
+        text.content = window.prompt('Please enter some text:');
     }
 }
 
@@ -78,12 +78,12 @@ function Chatbox($chatContainer, socket, userId) {
 }
 
 $(document).ready(function() {
-    $("#colorPicker").spectrum({
-        color: "#000",
+    $('#colorPicker').spectrum({
+        color: '#000',
         showPalette: true,
         hideAfterPaletteSelect: true,
         showButtons: false,
-        preferredFormat: "rgb"
+        preferredFormat: 'rgb'
     });
 
     var sessionId;
@@ -166,7 +166,6 @@ $(document).ready(function() {
     TextTool.prototype.constructor = TextTool;
 
     TextTool.prototype.mouseDownEvent = function(data) {
-        console.log("called");
         canvas.insertText(data, sessionId);
         socket.emit('insertText', data, sessionId);
         return;
@@ -205,7 +204,7 @@ $(document).ready(function() {
     });
 
     $('#save').click(function() {
-        var filename = window.prompt("Please name the image:", "bitboard-"+boardId+".png");
+        var filename = window.prompt('Please name the image:', 'bitboard-' + boardId + '.png');
         $('canvas#draw')[0].toBlob(function(blob) {
             saveAs(blob, filename);
         });
