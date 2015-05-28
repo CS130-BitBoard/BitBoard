@@ -148,7 +148,6 @@ nav {
 
 canvas#draw {
     background-color: #fff;
-    border: 15px solid #f5f5f5;
     cursor: crosshair;
     margin: auto;
     margin-top: 51px;
