@@ -197,8 +197,9 @@ $(document).ready(function() {
     });
 
     $('#save').click(function() {
+        var filename = window.prompt("Please name the image:", "bitboard-"+boardId+".png");
         $('canvas#draw')[0].toBlob(function(blob) {
-            saveAs(blob, 'test.png');
+            saveAs(blob, filename);
         });
     });
 
