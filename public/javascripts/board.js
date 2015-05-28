@@ -166,7 +166,6 @@ $(document).ready(function() {
     TextTool.prototype.constructor = TextTool;
 
     TextTool.prototype.mouseDownEvent = function(data) {
-        console.log('called');
         canvas.insertText(data, sessionId);
         socket.emit('insertText', data, sessionId);
         return;
