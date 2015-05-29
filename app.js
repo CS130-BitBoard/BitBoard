@@ -49,7 +49,7 @@ var bitboard_server_init = function() {
 
     //Called when a new client joins.
     //The functions defined within control the server's communication with that client.
-    //The server just keeps a log of each message sent and hendles relaying a client's 
+    //The server just keeps a log of each message sent and hendles relaying a client's
     //messages to all the other clients on that board.
     io.on('connection', function(socket) {
         var boardId = '';
@@ -122,6 +122,7 @@ var bitboard_server_init = function() {
                     delete boards[boardId];
                 }
 
+                socket.broadcast.to(boardId).emit('userDisconnected', socket.userId);
                 socket.broadcast.to(boardId).emit('updateChatbox', '', socket.userId + ' disconnected');
             }
         });

@@ -166,6 +166,12 @@ function Canvas() {
         }
         this.clientDisplays[userId] = $('.client-display[data-userid="' + userId + '"]');
     };
+
+    this.removeClientDisplay = function(userId) {
+        if (this.clientDisplays[userId]) {
+            this.clientDisplays[userId].remove();
+        }
+    };
 }
 
 //This function controls the chat window.
@@ -279,6 +285,10 @@ $(document).ready(function() {
                     canvas.addClientDisplay(userId);
                 }
                 canvas.updateClientDisplay(userId, x, y, width, height);
+            });
+
+            socket.on('userDisconnected', function(userId) {
+                canvas.removeClientDisplay(userId);
             });
         }
     });
