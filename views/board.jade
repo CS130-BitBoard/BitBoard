@@ -20,7 +20,8 @@ block content
           input.button.small#toggle-chat(type="button", value="Chat")
           input.button.small#clear(type="button", value="Clear")
 
-      canvas#draw(width="800", height="450")
+      div.canvas-wrapper
+        canvas#draw(width="800", height="450")
 
     div#chat-container.closed
       div.chat

@@ -49,6 +49,11 @@ function Canvas() {
             $canvas.addClass('disabled');
         }
     };
+
+    this.addExternalClientDisplay = function(x, y, width, height) {
+        // TODO: make this actually dynamic position and size
+        $('.canvas-wrapper').append('<div class="client-display">ryan</div>');
+    };
 }
 
 function Chatbox($chatContainer, socket, userId) {
