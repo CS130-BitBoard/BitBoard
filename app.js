@@ -1,5 +1,6 @@
 var express = require('express'),
-    http = require('http');
+    http = require('http'),
+    session = require('express-session');
 
 var bitboard_server_init = function() {
     var app = express();
@@ -11,7 +12,12 @@ var bitboard_server_init = function() {
         app.set('view engine', 'jade');
         app.use(express.logger('dev'));
         app.use(express.static(__dirname + '/public'));
-        app.use(express.json());
+        app.use(express.bodyParser()); // Do not remove this line to hide deprecation warnings. It is necessary.
+        app.use(session({
+            secret: 'hunter2',
+            resave: false,
+            saveUninitialized: true
+        }));
         app.use(app.router);
     });
 
@@ -19,10 +25,15 @@ var bitboard_server_init = function() {
         app.use(express.errorHandler());
     });
 
+    // Dictionary of boards. key: boardId, value: Board
+    var boards = {};
+
     var indexRoutes = require('./routes');
-    var boardRoutes = require('./routes/board');
+    var boardRoutes = require('./routes/board')(boards);
+
     app.get('/', indexRoutes.index);
     app.post('/boards', boardRoutes.create);
+    app.post('/boards/join', boardRoutes.join);
     app.get('/boards/:boardId', boardRoutes.get);
 
     function StateMessage(type, data, id) {
@@ -30,13 +41,6 @@ var bitboard_server_init = function() {
         this.data = data;
         this.sessionId = id;
     }
-    function Board() {
-        this.users = []; // list of userIds (Strings)
-        this.stateMessages = []; // list of StateMessages
-    }
-
-    // Dictionary of boards. key: boardId, value: Board
-    var boards = {};
 
     io.on('connection', function(socket) {
         var boardId = '';
@@ -46,13 +50,14 @@ var bitboard_server_init = function() {
             socket.join(boardId);
 
             if (!boards[boardId]) {
-                boards[boardId] = new Board();
+                // TODO more gracefully do this
+                console.log('that board does not exist')
+                return;
             }
 
             // TODO: should this function be allowed to continue with a falsey userId?
             if (userId) {
                 socket.userId = userId;
-                boards[boardId].users.push(userId);
             }
 
             socket.emit('updateChatbox', '', ' you have joined');
@@ -87,21 +92,21 @@ var bitboard_server_init = function() {
                 boards[boardId].users.splice(disconnectedUserIndex, 1);
 
                 // TODO: Are we sure we don't want to preserve boards for future use?
-                if (boards[boardId].users.length === 0) {
-                    delete boards[boardId];
-                }
+                // if (boards[boardId].users.length === 0) {
+                //     delete boards[boardId];
+                // }
 
                 socket.broadcast.to(boardId).emit('updateChatbox', '', socket.userId + ' disconnected');
             }
         });
     });
 
-    return server; 
+    return server;
 }
 
 module.exports = bitboard_server_init;
 
-//Creates the server when run from the command line
+// Creates the server when run from the command line
 if (!module.parent) {
     bitboard_server_init();
 }
