@@ -385,7 +385,7 @@ $(document).ready(function() {
      *    data: The position of the click
      */
     TextTool.prototype.mouseDownEvent = function(data) {
-        data.text = window.prompt('Please enter some text:');
+        data.text = window.prompt('Please enter some text:') || "";
         canvas.insertText(data, sessionId);
         socket.emit('insertText', data, sessionId);
         return;
