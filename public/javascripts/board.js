@@ -59,11 +59,12 @@ function Canvas() {
                 .height(height);
     }
 
-    this.addClientDisplay = function(userId, x, y, width, height) {
-        $('.canvas-wrapper').append(
-            '<div class="client-display" data-userid="' + userId + '">' + userId + '</div>');
-        this.clientDisplays[userId] = $display = $('client-display[data-userid="' + userId + '"]');
-        this.updateClientDisplay(userId, x, y, width, height);
+    this.addClientDisplay = function(userId) {
+        if (!this.clientDisplays[userId]) {
+            $('.canvas-wrapper').append(
+                '<div class="client-display" data-userid="' + userId + '">' + userId + '</div>');
+        }
+        this.clientDisplays[userId] = $('.client-display[data-userid="' + userId + '"]');
     };
 }
 
@@ -142,6 +143,15 @@ $(document).ready(function() {
         socket.on('updateChatbox', function(userId, message) {
             chatbox.postMessage(userId, message);
         });
+
+        if ($('.wrapper').data('mobile') === false) {
+            socket.on('updateClientDimensions', function(userId, x, y, width, height) {
+                if (!canvas.clientDisplays[userId]) {
+                    canvas.addClientDisplay(userId);
+                }
+                canvas.updateClientDisplay(userId, x, y, width, height);
+            });
+        }
     });
 
     Tool.prototype.createDataFromPoint = function(point) {
@@ -213,8 +223,7 @@ $(document).ready(function() {
         $('#board').scroll(function() {
             var x = $(this).scrollLeft();
             var y = $(this).scrollTop();
-
-            // TODO: emit event
+            socket.emit('updateClientDimensions', userId, x, y, $(window).width(), $(window).height());
         });
     }
 
@@ -267,7 +276,4 @@ $(document).ready(function() {
     $('#send-message').click(chatbox.sendCurrentMessage);
 
     $('#pencil').click();
-
-    // TODO: remove this
-    canvas.addClientDisplay('ryan', 40, 80, 100, 200);
 });
