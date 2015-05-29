@@ -4,6 +4,8 @@
  */
 function Canvas() {
     var paths = {};
+    var items = new Group();
+    var last_point;
 
     /*
      * Removes every element from the canvas, leaving it blank
@@ -16,6 +18,7 @@ function Canvas() {
         // rect.top = 0;
         // rect.bottom = 0;
         // rect.fillColor = 'white';
+        items = new Group();
         view.draw();
     };
 
@@ -34,8 +37,9 @@ function Canvas() {
         path.strokeJoin = 'round';
 
         path.add(new Point(data.point.x, data.point.y));
+        items.addChild(path);
+        last_point = data.point;
         paths[sessionId] = path;
-
         view.draw();
     };
 
@@ -50,6 +54,10 @@ function Canvas() {
         if (data.tool === 'pencilTool' || data.tool === 'eraserTool') {
             path.add(new Point(data.point.x, data.point.y));
         }
+
+        this.resizeView(data.point);
+        last_point = data.point;
+
         view.draw();
     };
 
@@ -80,6 +88,36 @@ function Canvas() {
             $canvas.addClass('disabled');
         }
     };
+
+    this.resizeView = function(point) {
+        var center = project.view.center;
+        var view_size = project.view.size;
+        var buffer_ratio = .025;
+        var scale_thresh = .7;
+        var x_buffer = view_size.width * buffer_ratio;
+        var y_buffer = view_size.height * buffer_ratio;
+
+        var scale_factor = 2;
+
+        if (point.x < x_buffer && (last_point.x -  point.x) >= scale_thresh) {
+            scale_factor = (center.x - x_buffer) / (center.x - point.x);
+        } else if (point.x > (view_size.width - x_buffer) && (point.x - last_point.x) >= scale_thresh) {
+            scale_factor = (view_size.width - x_buffer) / point.x;
+        } 
+
+        if (point.y < y_buffer && (last_point.y - point.y) >= scale_thresh ) {
+            scale_factor = Math.min(scale_factor, (center.y - y_buffer) / (center.y - point.y));
+        } else if (point.y > (view_size.height - y_buffer) && (point.y - last_point.y) >= scale_thresh) {
+            scale_factor = Math.min(scale_factor, (view_size.height - y_buffer) / point.y);
+        }
+
+        //We need to scale down
+        if (scale_factor < 1) {
+            scale_factor = Math.max(scale_factor, 0.99);
+            items.scale(scale_factor, center);
+        }
+
+    }
 }
 
 //This function controls the chat window.
