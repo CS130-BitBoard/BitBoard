@@ -38,7 +38,7 @@ function Canvas() {
         text.justification = 'left';
         text.fillColor = data.color;
         text.fontSize = 20;
-        text.content = window.prompt('Please enter some text:');
+        text.content = data.text;
     }
 
     this.setEnabled = function(enable) {
@@ -175,6 +175,7 @@ $(document).ready(function() {
     TextTool.prototype.constructor = TextTool;
 
     TextTool.prototype.mouseDownEvent = function(data) {
+        data.text = window.prompt('Please enter some text:');
         canvas.insertText(data, sessionId);
         socket.emit('insertText', data, sessionId);
         return;
