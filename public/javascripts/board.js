@@ -3,9 +3,12 @@
  * Functions for drawing and adding text live here.
  */
 function Canvas() {
+    //The set of paths currently being drawn. Key'd by client id.
     var paths = {};
+    //This group contains each item currently on the cavas, so they can be manipulated as one
     var items = new Group();
-    var last_point;
+    //The x,y of the last point drawn on the canvas for a given line.
+    var last_points = {};
 
     /*
      * Removes every element from the canvas, leaving it blank
@@ -38,13 +41,14 @@ function Canvas() {
 
         path.add(new Point(data.point.x, data.point.y));
         items.addChild(path);
-        last_point = data.point;
+        last_points[sessionId] = data.point;
         paths[sessionId] = path;
         view.draw();
     };
 
     /*
-     * Adds new points to a line (dragging the mouse)
+     * Adds new points to a line (dragging the mouse).
+     * This function grows the canvas as the user tries to draw off the edge
      * Params:
      *    data: Information describing the line (tool used, click location, etc)
      *    sessionId: The id of the client that drew the line
@@ -55,8 +59,8 @@ function Canvas() {
             path.add(new Point(data.point.x, data.point.y));
         }
 
-        this.resizeView(data.point);
-        last_point = data.point;
+        this.resizeView(data.point, sessionId);
+        last_points[sessionId] = data.point;
 
         view.draw();
     };
@@ -89,31 +93,58 @@ function Canvas() {
         }
     };
 
-    this.resizeView = function(point) {
+    /*
+     * Virtually "grows" the canvas.
+     * This function compares the point that is being drawn to the edges of the canvas.
+     * If the point gets close enough, we downscale every item on the canvas to move the point we
+     * are about to draw back into the "safe" zone. The scaling parameter is given a floor to prevent
+     * the canvas elements from shrinking too quickly.
+     * Params:
+     *    point: The x,y coordinate of the point being are drawing
+     *    sessionId: The id of the client that generated this point
+     */
+    this.resizeView = function(point, sessionId) {
         var center = project.view.center;
         var view_size = project.view.size;
+
+        //The percent of each edge of the screen that triggers resizes 
         var buffer_ratio = .15;
+
+        //The amount of distance we need to move towards the edge of the screen to trigger a resize
+        //This is to stabilize leaving the boudary (say the user moves their mouse parallel to the edge or wavers)
         var scale_thresh = .7;
+        var last_point = last_points[sessionId];
+
+        //The resize zone size in project coordinates
         var x_buffer = view_size.width * buffer_ratio;
         var y_buffer = view_size.height * buffer_ratio;
 
+        //Set to an impossibly high default, we never scale by this amount.
         var scale_factor = 2;
 
+
+        //For each side, check that we are in the buffer zone, and that we have moved enough to trigger
+        //a resize.
+        //The resize amount is determined by how far we are into the buffer zone, as we scale the new point to be just outside
+        //The buffer.
         if (point.x < x_buffer && (last_point.x -  point.x) >= scale_thresh) {
             scale_factor = (center.x - x_buffer) / (center.x - point.x);
         } else if (point.x > (view_size.width - x_buffer) && (point.x - last_point.x) >= scale_thresh) {
             scale_factor = (view_size.width - x_buffer) / point.x;
         } 
 
+        //Do the same as above, but in this case we pick the smallest scale factor, in case the user is in a corner and 
+        //both x and y resizes get triggered.
         if (point.y < y_buffer && (last_point.y - point.y) >= scale_thresh ) {
             scale_factor = Math.min(scale_factor, (center.y - y_buffer) / (center.y - point.y));
         } else if (point.y > (view_size.height - y_buffer) && (point.y - last_point.y) >= scale_thresh) {
             scale_factor = Math.min(scale_factor, (view_size.height - y_buffer) / point.y);
         }
 
-        //We need to scale down
+        //Rescale all the elements
         if (scale_factor < 1) {
-            scale_factor = Math.max(scale_factor, 0.99);
+            scale_factor = Math.max(scale_factor, 0.99); //Set a floor at .99 of the original size
+            //Make sure to scale around the center of the canvas
             items.scale(scale_factor, center);
         }
 
