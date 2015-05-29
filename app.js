@@ -72,6 +72,12 @@ var bitboard_server_init = function() {
             boards[boardId].stateMessages.push(new StateMessage('continuePath', data, sessionId));
             socket.broadcast.to(boardId).emit('continuePath', data, sessionId);
         });
+
+        socket.on('insertText', function(data, sessionId) {
+            boards[boardId].stateMessages.push(new StateMessage('insertText', data, sessionId));
+            socket.broadcast.to(boardId).emit('insertText', data, sessionId);
+        });
+
         socket.on('clearCanvas', function() {
             boards[boardId].stateMessages = [];
             socket.broadcast.to(boardId).emit('clearCanvas');
