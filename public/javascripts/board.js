@@ -40,6 +40,15 @@ function Canvas() {
         text.fontSize = 20;
         text.content = window.prompt('Please enter some text:');
     }
+
+    this.setEnabled = function(enable) {
+        var $canvas = $('#draw');
+        if (enable) {
+            $canvas.removeClass('disabled');
+        } else {
+            $canvas.addClass('disabled');
+        }
+    };
 }
 
 function Chatbox($chatContainer, socket, userId) {
@@ -178,8 +187,15 @@ $(document).ready(function() {
     var eraserTool = new DrawTool({ toolName: 'eraserTool', color: 'white', width: 20 });
     var textTool = new TextTool();
 
+    $('#pan').click(function() {
+        canvas.setEnabled(false);
+        $('.selected').removeClass('selected');
+        $('#pan').addClass('selected');
+    });
+
     $('#pencil').click(function() {
         pencilTool.activate();
+        canvas.setEnabled(true);
         $('.selected').removeClass('selected');
         $('#colorPicker').spectrum('enable');
         $('#pencil').addClass('selected');
@@ -187,12 +203,14 @@ $(document).ready(function() {
 
     $('#text').click(function() {
         textTool.activate();
+        canvas.setEnabled(true);
         $('.selected').removeClass('selected');
         $('#text').addClass('selected');
     });
 
     $('#eraser').click(function() {
         eraserTool.activate();
+        canvas.setEnabled(true);
         $('.selected').removeClass('selected');
         $('#eraser').addClass('selected');
     });

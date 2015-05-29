@@ -134,11 +134,18 @@ nav {
     background-color: #a9def4;
 }
 
-#save{
+#save {
     background-image: url('/images/floppy.png');
 }
     .wrapper[data-mobile="true"] #save {
         display: none;
+    }
+#pan {
+    background-image: url('/images/pan.png');
+    display: none;
+}
+    .wrapper[data-mobile="true"] #pan {
+        display: inline-block;
     }
 #pencil {
     background-image: url('/images/pencil.png');
@@ -190,6 +197,9 @@ canvas#draw {
 }
     canvas#draw.left {
         margin-left: 0;
+    }
+    canvas#draw.disabled {
+        pointer-events: none;
     }
     .wrapper[data-mobile="true"] canvas#draw {
         margin: 61px 10px 0;
