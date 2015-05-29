@@ -35,6 +35,7 @@ var bitboard_server_init = function() {
     app.post('/boards', boardRoutes.create);
     app.post('/boards/join', boardRoutes.join);
     app.get('/boards/:boardId', boardRoutes.get);
+    app.get('/boards-mobile/:boardId', boardRoutes.get_Mobile);
 
     function StateMessage(type, data, id) {
         this.type = type;

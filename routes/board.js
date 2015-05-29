@@ -17,6 +17,30 @@ module.exports = function(boards) {
         res.send(401, 'You are not a member of this board.');
     };
 
+    // KLUDGE: Insecure method.
+    this.get_Mobile = function(req, res) {
+        var boardId = req.params.boardId;
+        var userId = req.query.userid;
+        var password = req.query.password;
+
+        if (!boards[boardId] || boards[boardId].password !== password) {
+            res.send(401, 'Password incorrect.');
+            return;
+        }
+
+        if (boards[boardId].users.indexOf(userId) === -1) {
+            boards[boardId].users.push(userId);
+        }
+        req.session.userId = userId;
+
+        res.render('board', {
+            title: 'BitBoard',
+            boardId: boardId,
+            userId: userId,
+            mobile: 'true'
+        });
+    };
+
     this.join = function(req, res) {
         var boardId = req.body.boardid;
         var userId = req.body.userid;
