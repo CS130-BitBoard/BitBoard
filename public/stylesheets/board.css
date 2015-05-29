@@ -85,6 +85,7 @@ nav {
     padding: 5px;
     height: 51px;
     box-sizing: border-box;
+    z-index: 100;
 }
 
 .nav-icons, .nav-buttons {
