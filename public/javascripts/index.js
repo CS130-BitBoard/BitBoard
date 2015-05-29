@@ -9,14 +9,17 @@ $(document).ready(function() {
         }
     });
 
+    //Checks that the board code is the right length
     function shortcodeValid() {
         return $('.shortcode').val().length === validShortcodeLength;
     }
 
+    //Checks that the username is long enough
     function useridValid() {
         return $('.userid').val().length >= validUsernameLength;
     }
 
+    //Enables the join button when both the user id and the room code are valid
     // $('.shortcode, .userid').on('keyup', function() {
     //     if (shortcodeValid() && useridValid()) {
     //         // TODO: validate on backend if it is legitimate.
