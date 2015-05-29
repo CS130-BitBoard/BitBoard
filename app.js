@@ -81,6 +81,10 @@ var bitboard_server_init = function() {
             socket.broadcast.to(boardId).emit('updateChatbox', socket.userId, message);
         });
 
+        socket.on('sendClientDimensions', function(height, width){
+            socket.broadcast.to(boardId).emit('updateClientPosition', height, width);
+        });
+
         socket.on('disconnect', function() {
             if (socket.userId != null) {
                 var disconnectedUserIndex = boards[boardId].users.indexOf(socket.userId)
@@ -96,7 +100,7 @@ var bitboard_server_init = function() {
         });
     });
 
-    return server; 
+    return server;
 }
 
 module.exports = bitboard_server_init;
