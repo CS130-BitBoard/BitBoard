@@ -170,6 +170,7 @@ function Canvas() {
     this.removeClientDisplay = function(userId) {
         if (this.clientDisplays[userId]) {
             this.clientDisplays[userId].remove();
+            delete this.clientDisplays[userId];
         }
     };
 }
