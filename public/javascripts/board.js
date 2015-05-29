@@ -86,13 +86,6 @@ function Canvas() {
         }
 
     }
-
-    this.inside_canvas = function(point) {
-        var view_size = project.view.size;
-        var inside_x = point.x >= 0 && point.x <= view_size.width;
-        var inside_y = point.y >= 0 && point.y <= view_size.height;
-        return inside_x && inside_y;
-    }
 }
 
 function Chatbox($chatContainer, socket, userId) {
