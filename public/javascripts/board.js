@@ -50,9 +50,20 @@ function Canvas() {
         }
     };
 
-    this.addExternalClientDisplay = function(x, y, width, height) {
-        // TODO: make this actually dynamic position and size
-        $('.canvas-wrapper').append('<div class="client-display">ryan</div>');
+    this.clientDisplays = {};
+    this.updateClientDisplay = function(userId, x, y, width, height) {
+        $display = this.clientDisplays[userId];
+        $display.css('left', x + 'px')
+                .css('top', y + 'px')
+                .width(width)
+                .height(height);
+    }
+
+    this.addClientDisplay = function(userId, x, y, width, height) {
+        $('.canvas-wrapper').append(
+            '<div class="client-display" data-userid="' + userId + '">' + userId + '</div>');
+        this.clientDisplays[userId] = $display = $('client-display[data-userid="' + userId + '"]');
+        this.updateClientDisplay(userId, x, y, width, height);
     };
 }
 
@@ -196,12 +207,16 @@ $(document).ready(function() {
         canvas.setEnabled(false);
         $('.selected').removeClass('selected');
         $('#pan').addClass('selected');
-
-        // TODO: I think this should actually be an emit event e.g. socket.emit('sendClientDimensions', ...)
-        socket.on('updateClientPosition', function(height, width) {
-            // ...
-        });
     });
+
+    if ($('.wrapper').data('mobile') === true) {
+        $('#board').scroll(function() {
+            var x = $(this).scrollLeft();
+            var y = $(this).scrollTop();
+
+            // TODO: emit event
+        });
+    }
 
     $('#pencil').click(function() {
         pencilTool.activate();
@@ -252,4 +267,7 @@ $(document).ready(function() {
     $('#send-message').click(chatbox.sendCurrentMessage);
 
     $('#pencil').click();
+
+    // TODO: remove this
+    canvas.addClientDisplay('ryan', 40, 80, 100, 200);
 });
