@@ -1,11 +1,16 @@
 var express = require('express'),
     http = require('http');
 
+/*
+ * Spawns a Bitboard server
+ * Returns: A server object
+ */
 var bitboard_server_init = function() {
     var app = express();
     var server = app.listen(3000);
     var io = require('socket.io').listen(server);
 
+    //Basic server configuration
     app.configure(function() {
         app.set('views', __dirname + '/views');
         app.set('view engine', 'jade');
@@ -19,17 +24,21 @@ var bitboard_server_init = function() {
         app.use(express.errorHandler());
     });
 
+    //Defines the structure of the application
     var indexRoutes = require('./routes');
     var boardRoutes = require('./routes/board');
     app.get('/', indexRoutes.index);
     app.post('/boards', boardRoutes.create);
     app.get('/boards/:boardId', boardRoutes.get);
 
+    //Holds a single message broadcast by a client
     function StateMessage(type, data, id) {
         this.type = type;
         this.data = data;
         this.sessionId = id;
     }
+
+    //The current state of a single board
     function Board() {
         this.users = []; // list of userIds (Strings)
         this.stateMessages = []; // list of StateMessages
@@ -38,9 +47,15 @@ var bitboard_server_init = function() {
     // Dictionary of boards. key: boardId, value: Board
     var boards = {};
 
+    //Called when a new client joins.
+    //The functions defined within control the server's communication with that client.
+    //The server just keeps a log of each message sent and hendles relaying a client's 
+    //messages to all the other clients on that board.
     io.on('connection', function(socket) {
         var boardId = '';
 
+        //Initial setup of the board state for a new user
+        //Replays all the messages the server received before the client joined
         socket.on('joinBoard', function(newBoardId, userId) {
             boardId = newBoardId;
             socket.join(boardId);
@@ -64,10 +79,12 @@ var bitboard_server_init = function() {
             });
         });
 
+        //These just relay messages to all clients connected to the board.
         socket.on('startPath', function(data, sessionId) {
             boards[boardId].stateMessages.push(new StateMessage('startPath', data, sessionId));
             socket.broadcast.to(boardId).emit('startPath', data, sessionId);
         });
+
         socket.on('continuePath', function(data, sessionId) {
             boards[boardId].stateMessages.push(new StateMessage('continuePath', data, sessionId));
             socket.broadcast.to(boardId).emit('continuePath', data, sessionId);
@@ -105,6 +122,7 @@ var bitboard_server_init = function() {
     return server; 
 }
 
+//We export the server as a module so it can used inside the test framework.
 module.exports = bitboard_server_init;
 
 //Creates the server when run from the command line
