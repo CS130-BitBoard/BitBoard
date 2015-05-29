@@ -73,6 +73,7 @@ function Canvas() {
      */
     this.insertText = function(data, sessionId) {
         var text = new PointText(new Point(data.point.x, data.point.y));
+        items.addChild(text);
         text.justification = 'left';
         text.fillColor = data.color;
         text.fontSize = 20;
