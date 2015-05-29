@@ -80,7 +80,6 @@ h1, h2 {
         .modal .dialog input.modal-input {
             border: 1px solid #2980b9;
             margin: 0;
-            text-transform: uppercase;
             font-family: "Lato", Helvetica, sans-serif;
             font-size: 30px;
             font-weight: 300;
