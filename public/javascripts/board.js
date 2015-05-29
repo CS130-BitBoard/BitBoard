@@ -107,7 +107,7 @@ function Canvas() {
         var center = project.view.center;
         var view_size = project.view.size;
 
-        //The percent of each edge of the screen that triggers resizes 
+        //The percent of each edge of the screen that triggers resizes
         var buffer_ratio = .15;
 
         //The amount of distance we need to move towards the edge of the screen to trigger a resize
@@ -131,9 +131,9 @@ function Canvas() {
             scale_factor = (center.x - x_buffer) / (center.x - point.x);
         } else if (point.x > (view_size.width - x_buffer) && (point.x - last_point.x) >= scale_thresh) {
             scale_factor = (view_size.width - x_buffer) / point.x;
-        } 
+        }
 
-        //Do the same as above, but in this case we pick the smallest scale factor, in case the user is in a corner and 
+        //Do the same as above, but in this case we pick the smallest scale factor, in case the user is in a corner and
         //both x and y resizes get triggered.
         if (point.y < y_buffer && (last_point.y - point.y) >= scale_thresh ) {
             scale_factor = Math.min(scale_factor, (center.y - y_buffer) / (center.y - point.y));
@@ -149,6 +149,29 @@ function Canvas() {
         }
 
     }
+
+    this.clientDisplays = {};
+    this.updateClientDisplay = function(userId, x, y, width, height) {
+        $display = this.clientDisplays[userId];
+        $display.css('left', x + 'px')
+                .css('top', y + 'px')
+                .width(width)
+                .height(height);
+    }
+
+    this.addClientDisplay = function(userId) {
+        if (!this.clientDisplays[userId]) {
+            $('.canvas-wrapper').append(
+                '<div class="client-display" data-userid="' + userId + '">' + userId + '</div>');
+        }
+        this.clientDisplays[userId] = $('.client-display[data-userid="' + userId + '"]');
+    };
+
+    this.removeClientDisplay = function(userId) {
+        if (this.clientDisplays[userId]) {
+            this.clientDisplays[userId].remove();
+        }
+    };
 }
 
 //This function controls the chat window.
@@ -187,7 +210,7 @@ function Chatbox($chatContainer, socket, userId) {
         }
     };
 
-    /* 
+    /*
      * Posts a chat message to the server
      */
     this.sendCurrentMessage = function() {
@@ -197,7 +220,7 @@ function Chatbox($chatContainer, socket, userId) {
         socket.emit('sendChatMessage', message);
     };
 
-    /* 
+    /*
      * Toggles the state of the chat box between open and closed.
      */
     this.toggle = function() {
@@ -229,7 +252,7 @@ $(document).ready(function() {
     var canvas = new Canvas();
     var chatbox = new Chatbox($('#chat-container'), socket, userId);
 
-    /* 
+    /*
      * Invokes behavior based on messages from the server
      */
     socket.on('connect', function() {
@@ -255,12 +278,25 @@ $(document).ready(function() {
         socket.on('updateChatbox', function(userId, message) {
             chatbox.postMessage(userId, message);
         });
+
+        if ($('.wrapper').data('mobile') === false) {
+            socket.on('updateClientDimensions', function(userId, x, y, width, height) {
+                if (!canvas.clientDisplays[userId]) {
+                    canvas.addClientDisplay(userId);
+                }
+                canvas.updateClientDisplay(userId, x, y, width, height);
+            });
+
+            socket.on('userDisconnected', function(userId) {
+                canvas.removeClientDisplay(userId);
+            });
+        }
     });
 
     //The following section deals with user input tools.
     //We do so by extending the Too, prototype provided by Paper.js
 
-    /* 
+    /*
      * Gathers data when a user clicks or drags the mouse
      * Params:
      *    point: The x and y coordinates(in the Paper.js coordinate space) of the mouse click
@@ -280,7 +316,7 @@ $(document).ready(function() {
         };
     };
 
-    /* 
+    /*
      * Triggers when the user clicks the mouse. Dispatches behavior to the current tool. (Strategy Pattern)
      * Params:
      *    event: Data about the mouse click
@@ -290,7 +326,7 @@ $(document).ready(function() {
         this.mouseDownEvent(data);
     };
 
-    /* 
+    /*
      * Triggers when the user drags the mouse. Dispatches behavior to the current tool. (Strategy Pattern)
      * Params:
      *    event: Data about the mouse position and movement
@@ -315,7 +351,7 @@ $(document).ready(function() {
     DrawTool.prototype = Object.create(Tool.prototype);
     DrawTool.prototype.constructor = DrawTool;
 
-    /* 
+    /*
      * Tells the canvas to start drawing a line, and notifies the server we started to draw
      * Params:
      *    data: The position and color if the line start
@@ -325,7 +361,7 @@ $(document).ready(function() {
         socket.emit('startPath', data, sessionId);
     }
 
-    /* 
+    /*
      * Tells the canvas to continue drawing a line, and notifies the server we continue to draw
      * Params:
      *    data: The position and color if the line segment
@@ -342,7 +378,7 @@ $(document).ready(function() {
     TextTool.prototype = Object.create(Tool.prototype);
     TextTool.prototype.constructor = TextTool;
 
-    /* 
+    /*
      * Prompts the user for text and inserts in into the canvas, notifying the server of the contents and position
      * Params:
      *    data: The position of the click
@@ -354,7 +390,7 @@ $(document).ready(function() {
         return;
     }
 
-    /* 
+    /*
      * This function does nothing
      */
     TextTool.prototype.mouseDragEvent = function() {};
@@ -371,7 +407,15 @@ $(document).ready(function() {
         $('#pan').addClass('selected');
     });
 
-    //Enables the pencil tool
+    if ($('.wrapper').data('mobile') === true) {
+        $('#board').scroll(function() {
+            var x = $(this).scrollLeft();
+            var y = $(this).scrollTop();
+            socket.emit('updateClientDimensions', userId, x, y, $(window).width(), $(window).height());
+        });
+    }
+
+    // Enables the pencil tool
     $('#pencil').click(function() {
         pencilTool.activate();
         canvas.setEnabled(true);
