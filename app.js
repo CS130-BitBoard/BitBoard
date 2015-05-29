@@ -1,5 +1,6 @@
 var express = require('express'),
-    http = require('http');
+    http = require('http'),
+    session = require('express-session');
 
 /*
  * Spawns a Bitboard server
@@ -16,7 +17,12 @@ var bitboard_server_init = function() {
         app.set('view engine', 'jade');
         app.use(express.logger('dev'));
         app.use(express.static(__dirname + '/public'));
-        app.use(express.json());
+        app.use(express.bodyParser()); // Do not remove this line to hide deprecation warnings. It is necessary.
+        app.use(session({
+            secret: 'hunter2',
+            resave: false,
+            saveUninitialized: true
+        }));
         app.use(app.router);
     });
 
@@ -24,12 +30,18 @@ var bitboard_server_init = function() {
         app.use(express.errorHandler());
     });
 
+    // Dictionary of boards. key: boardId, value: Board
+    var boards = {};
+
     //Defines the structure of the application
     var indexRoutes = require('./routes');
-    var boardRoutes = require('./routes/board');
+    var boardRoutes = require('./routes/board')(boards);
+
     app.get('/', indexRoutes.index);
     app.post('/boards', boardRoutes.create);
+    app.post('/boards/join', boardRoutes.join);
     app.get('/boards/:boardId', boardRoutes.get);
+    app.get('/boards-mobile/:boardId', boardRoutes.get_Mobile);
 
     //Holds a single message broadcast by a client
     function StateMessage(type, data, id) {
@@ -37,15 +49,6 @@ var bitboard_server_init = function() {
         this.data = data;
         this.sessionId = id;
     }
-
-    //The current state of a single board
-    function Board() {
-        this.users = []; // list of userIds (Strings)
-        this.stateMessages = []; // list of StateMessages
-    }
-
-    // Dictionary of boards. key: boardId, value: Board
-    var boards = {};
 
     //Called when a new client joins.
     //The functions defined within control the server's communication with that client.
@@ -58,17 +61,15 @@ var bitboard_server_init = function() {
         //Replays all the messages the server received before the client joined
         socket.on('joinBoard', function(newBoardId, userId) {
             boardId = newBoardId;
+
+            if (!boardId || !boards[boardId] || !userId) {
+                // TODO more gracefully do this
+                console.log('bad input')
+                return;
+            }
+
             socket.join(boardId);
-
-            if (!boards[boardId]) {
-                boards[boardId] = new Board();
-            }
-
-            // TODO: should this function be allowed to continue with a falsey userId?
-            if (userId) {
-                socket.userId = userId;
-                boards[boardId].users.push(userId);
-            }
+            socket.userId = userId;
 
             socket.emit('updateChatbox', '', ' you have joined');
             socket.broadcast.to(boardId).emit('updateChatbox', '', ' ' + userId + ' has joined');
@@ -114,14 +115,6 @@ var bitboard_server_init = function() {
 
         socket.on('disconnect', function() {
             if (socket.userId != null) {
-                var disconnectedUserIndex = boards[boardId].users.indexOf(socket.userId)
-                boards[boardId].users.splice(disconnectedUserIndex, 1);
-
-                // TODO: Are we sure we don't want to preserve boards for future use?
-                if (boards[boardId].users.length === 0) {
-                    delete boards[boardId];
-                }
-
                 socket.broadcast.to(boardId).emit('userDisconnected', socket.userId);
                 socket.broadcast.to(boardId).emit('updateChatbox', '', socket.userId + ' disconnected');
             }
@@ -134,7 +127,7 @@ var bitboard_server_init = function() {
 //We export the server as a module so it can used inside the test framework.
 module.exports = bitboard_server_init;
 
-//Creates the server when run from the command line
+// Creates the server when run from the command line
 if (!module.parent) {
     bitboard_server_init();
 }

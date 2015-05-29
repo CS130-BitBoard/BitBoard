@@ -7,20 +7,20 @@ block content
   a.button.login-button(href="#create-modal") Create Room
 
   div.modal#join-modal
-    div.dialog
+    form.dialog(action="boards/join", method="POST")
       div.field
         h2 Your Name
-        input.modal-input.userid(type="text", maxlength="8", required="true")
+        input.modal-input.userid(type="text", name="userid" maxlength="8", required="true")
 
       div.field
         h2 Room Code
-        input.modal-input.shortcode(type="text", maxlength="4", required="true")
+        input.modal-input.shortcode(type="text", name="boardid" maxlength="4", required="true")
 
       div.field
         h2 Password
-        input.modal-input(type="password")
+        input.modal-input(type="password", name="password")
 
-      a.button.submit.join.invalid(href="#join-modal") Join
+      input.button.submit.join(type="submit", value="Join")
 
   div.modal#create-modal
     form.dialog(action="boards/", method="POST")

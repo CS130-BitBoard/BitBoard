@@ -19,22 +19,22 @@ $(document).ready(function() {
         return $('.userid').val().length >= validUsernameLength;
     }
 
-    //Enables the join button when both the user id and the room code are valud
-    $('.shortcode, .userid').on('keyup', function() {
-        if (shortcodeValid() && useridValid()) {
-            // TODO: validate on backend if it is legitimate.
-            $('.submit').removeClass('invalid');
-        } else {
-            $('.submit').addClass('invalid');
-        }
-    });
+    //Enables the join button when both the user id and the room code are valid
+    // $('.shortcode, .userid').on('keyup', function() {
+    //     if (shortcodeValid() && useridValid()) {
+    //         // TODO: validate on backend if it is legitimate.
+    //         $('.submit').removeClass('invalid');
+    //     } else {
+    //         $('.submit').addClass('invalid');
+    //     }
+    // });
 
-    $('.submit.join').click(function() {
-        if (!$(this).hasClass('invalid')) {
-            var $dialog = $(this).parent();
-            var boardId = $dialog.find('.shortcode').val();
-            var userId = $dialog.find('.userid').val();
-            window.location.assign('/boards/' + boardId + '?userid=' + userId);
-        }
-    });
+    // $('.submit.join').click(function() {
+    //     if (!$(this).hasClass('invalid')) {
+    //         var $dialog = $(this).parent();
+    //         var boardId = $dialog.find('.shortcode').val();
+    //         var userId = $dialog.find('.userid').val();
+    //         window.location.assign('/boards/' + boardId + '?userid=' + userId);
+    //     }
+    // });
 });
