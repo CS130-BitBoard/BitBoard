@@ -108,6 +108,10 @@ var bitboard_server_init = function() {
             socket.broadcast.to(boardId).emit('updateClientPosition', height, width);
         });
 
+        socket.on('updateClientDimensions', function(userId, x, y, width, height) {
+            socket.broadcast.to(boardId).emit('updateClientDimensions', userId, x, y, width, height);
+        });
+
         socket.on('disconnect', function() {
             if (socket.userId != null) {
                 var disconnectedUserIndex = boards[boardId].users.indexOf(socket.userId)
