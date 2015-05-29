@@ -153,6 +153,9 @@ nav {
     #pencil.selected {
         background-image: url('/images/pencil-filled.png');
     }
+#thickness {
+    background-image: url('/images/thickness.png');
+}
 #text {
     background-image: url('/images/text.png');
 }
