@@ -190,23 +190,38 @@ nav {
     background: #e74c3c;
 }
 
+.canvas-wrapper {
+    position: relative;
+    margin: auto;
+    margin-top: 51px;
+    width: 800px;
+    hieght: 450px;
+}
+    .wrapper[data-mobile="true"] .canvas-wrapper {
+        margin: 61px 10px 0;
+    }
 canvas#draw {
     background-color: #fff;
     cursor: crosshair;
-    margin: auto;
-    margin-top: 51px;
     display: block;
     transition: margin 0.2s ease-in;
 }
-    canvas#draw.left {
+    /*canvas#draw.left {
         margin-left: 0;
-    }
+    }*/
     canvas#draw.disabled {
         pointer-events: none;
     }
-    .wrapper[data-mobile="true"] canvas#draw {
-        margin: 61px 10px 0;
-    }
+
+.client-display {
+    position: absolute;
+    border: 1px dashed red;
+    height: 200px;
+    width: 100px;
+    top: 30px;
+    left: 40px;
+    color: red;
+}
 
 /* Spectrum overrides: */
 .sp-replacer {

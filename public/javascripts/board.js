@@ -93,6 +93,7 @@ function Canvas() {
         }
     };
 
+<<<<<<< HEAD
     /*
      * Virtually "grows" the canvas.
      * This function compares the point that is being drawn to the edges of the canvas.
@@ -149,6 +150,12 @@ function Canvas() {
         }
 
     }
+=======
+    this.addExternalClientDisplay = function(x, y, width, height) {
+        // TODO: make this actually dynamic position and size
+        $('.canvas-wrapper').append('<div class="client-display">ryan</div>');
+    };
+>>>>>>> Add basic client display overlay on canvas
 }
 
 //This function controls the chat window.
