@@ -108,7 +108,7 @@ function Canvas() {
         var view_size = project.view.size;
 
         //The percent of each edge of the screen that triggers resizes
-        var buffer_ratio = .15;
+        var buffer_ratio = .075;
 
         //The amount of distance we need to move towards the edge of the screen to trigger a resize
         //This is to stabilize leaving the boudary (say the user moves their mouse parallel to the edge or wavers)
