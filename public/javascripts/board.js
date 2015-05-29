@@ -369,6 +369,11 @@ $(document).ready(function() {
         canvas.setEnabled(false);
         $('.selected').removeClass('selected');
         $('#pan').addClass('selected');
+
+        // TODO: I think this should actually be an emit event e.g. socket.emit('sendClientDimensions', ...)
+        socket.on('updateClientPosition', function(height, width) {
+            // ...
+        });
     });
 
     //Enables the pencil tool
