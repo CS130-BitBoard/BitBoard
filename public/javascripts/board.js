@@ -405,7 +405,7 @@ $(document).ready(function() {
         });
     }
 
-    //Enables the pencil tool
+    // Enables the pencil tool
     $('#pencil').click(function() {
         pencilTool.activate();
         canvas.setEnabled(true);
