@@ -47,18 +47,15 @@ var bitboard_server_init = function() {
 
         socket.on('joinBoard', function(newBoardId, userId) {
             boardId = newBoardId;
-            socket.join(boardId);
 
-            if (!boards[boardId]) {
+            if (!boardId || !boards[boardId] || !userId) {
                 // TODO more gracefully do this
-                console.log('that board does not exist')
+                console.log('bad input')
                 return;
             }
 
-            // TODO: should this function be allowed to continue with a falsey userId?
-            if (userId) {
-                socket.userId = userId;
-            }
+            socket.join(boardId);
+            socket.userId = userId;
 
             socket.emit('updateChatbox', '', ' you have joined');
             socket.broadcast.to(boardId).emit('updateChatbox', '', ' ' + userId + ' has joined');
@@ -88,14 +85,6 @@ var bitboard_server_init = function() {
 
         socket.on('disconnect', function() {
             if (socket.userId != null) {
-                var disconnectedUserIndex = boards[boardId].users.indexOf(socket.userId)
-                boards[boardId].users.splice(disconnectedUserIndex, 1);
-
-                // TODO: Are we sure we don't want to preserve boards for future use?
-                // if (boards[boardId].users.length === 0) {
-                //     delete boards[boardId];
-                // }
-
                 socket.broadcast.to(boardId).emit('updateChatbox', '', socket.userId + ' disconnected');
             }
         });
