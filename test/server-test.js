@@ -23,10 +23,12 @@ describe('/boards', function() {
            .send({ userid: 'creator' })
            .send({ password: '' })
     	   .end(function(err, res) {
+    	   		var board_path  = url.parse(res.req.path)
+		    	console.log(board_path);
 		    	assert.ifError(err);
 		    	assert.equal(res.status, status.OK);
-		    	var board_path  = url.parse(res.req.path).pathname
-			    superagent.get('http://localhost:3000'+board_path)
+			    superagent.post('http://localhost:3000/boards/join'+board_path)
+			    		.send
 			    		.send({userid: 'joiner'})
 			    		.end(function(err, res) {
 			    			assert.ifError(err);
@@ -139,8 +141,8 @@ describe('/boards', function() {
            .send({ userid: 'Jon' })
            .send({ password: 'Snow' })
     	   .end(function(err, res) {
-		    	assert.ifError(err);
-		    	assert.equal(res.status, status.OK);
+		    	assert(err);
+		    	assert.equal(res.status, status.UNAUTHORIZED);
 		    	var board_path  = url.parse(res.req.path).pathname;
 				superagent.get('http://localhost:3000'+board_path)
 						.send({ userid: 'Joffrey' })
