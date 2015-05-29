@@ -92,7 +92,7 @@ function Canvas() {
     this.resizeView = function(point) {
         var center = project.view.center;
         var view_size = project.view.size;
-        var buffer_ratio = .025;
+        var buffer_ratio = .15;
         var scale_thresh = .7;
         var x_buffer = view_size.width * buffer_ratio;
         var y_buffer = view_size.height * buffer_ratio;
